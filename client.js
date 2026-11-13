@@ -20,7 +20,7 @@ window.__ModuleLoader__.load({
     const zh = {
       panel: '深海搜索',
       title: '深海搜索',
-      subtitle: '遍历所有会话，潜到最深处，把那一句捞上来。',
+      subtitle: '全量索引每一段会话，精确命中每一处上下文。',
       placeholder: '输入关键词，或切到正则…',
       keyword: '关键词',
       regex: '正则',
@@ -141,7 +141,7 @@ window.__ModuleLoader__.load({
     const en = {
       panel: 'Deep Search',
       title: 'Deep Search',
-      subtitle: 'Dive through every session. Bring that line back.',
+      subtitle: 'Index every session. Resolve every hit.',
       placeholder: 'Type a keyword, or switch to regex…',
       keyword: 'Keyword',
       regex: 'Regex',

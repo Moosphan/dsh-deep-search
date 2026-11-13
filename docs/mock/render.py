@@ -59,7 +59,7 @@ def head(status_bits="就绪", count="42 会话", seg="86,420 段落"):
 <header class="dsss-head">
   <div class="dsss-head-copy">
     <h1 class="dsss-title">深海搜索</h1>
-    <p class="dsss-subtitle">遍历所有会话，潜到最深处，把那一句捞上来。</p>
+    <p class="dsss-subtitle">全量索引每一段会话，精确命中每一处上下文。</p>
   </div>
   <div class="dsss-head-meta">
     <span class="dsss-status{" is-building" if status_bits.startswith("索引") else ""}"><span class="dsss-status-dot"></span>{status_bits}</span>
