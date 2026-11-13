@@ -217,6 +217,7 @@ body{font-family:var(--dsw-font-family)}
 @media (max-width: 980px){.dsss-panel{grid-template-columns:minmax(0,1fr)}.dsss-preview{display:none}.dsss-wrap{padding:18px 18px 0}}
 @media (max-width: 720px){.dsss-kbd{display:none}.dsss-head-meta .dsss-meta-stat{display:none}}
 
+
 html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
 <body><div class="dsss-root"><div class="dsss-wrap">
 
@@ -254,14 +255,14 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
       <span class="dsss-group-path">~/work/payments</span>
     </span>
     <span class="dsss-live">进行中</span>
-    <span class="dsss-group-count">4</span>
+    <span class="dsss-group-count">3</span>
     <span class="dsss-group-time">11-12 18:42</span>
   </div>
   
 <div class="dsss-hit is-selected" role="button" tabindex="0">
   <span class="dsss-hit-rail dsss-role-assistant dsss-kind-正文"></span>
   <span class="dsss-hit-body">
-    <span class="dsss-hit-snippet">把 <mark class='dsss-mark'>gateway.timeout</mark> 从 8s 调到 15s，先灰度 10% 流量；回调重试 3 → 5 次，观察 30 分钟。</span>
+    <span class="dsss-hit-snippet">这次 <mark class='dsss-mark'>超时</mark> 是连接池等待导致的：把 gateway.timeout 从 8s 调到 15s，先灰度 10% 流量，观察 30 分钟。</span>
     <span class="dsss-hit-meta">
       <span class="dsss-loc dsss-loc-answer">回答</span>
       <span class="dsss-hit-turn">第 43 轮</span>
@@ -276,14 +277,14 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
 <div class="dsss-hit" role="button" tabindex="0">
   <span class="dsss-hit-rail dsss-role-assistant dsss-kind-工具调用"></span>
   <span class="dsss-hit-body">
-    <span class="dsss-hit-snippet">grep -R "<mark class='dsss-mark'>timeout</mark>" services/checkout | head -20</span>
+    <span class="dsss-hit-snippet">grep -R "<mark class='dsss-mark'>超时</mark>" logs/gateway | head -20</span>
     <span class="dsss-hit-meta">
       <span class="dsss-loc dsss-loc-execute">执行</span>
       <span class="dsss-hit-turn">第 42 轮</span>
       <span class="dsss-hit-kind">工具调用</span>
       <span class="dsss-hit-count">3 处</span>
       <span class="dsss-hit-time">11-12 18:07</span>
-      <span class="dsss-hit-file">services/checkout/handler.ts</span>
+      <span class="dsss-hit-file">logs/gateway/2026-11-12.log</span>
     </span>
   </span>
   <button type="button" class="dsss-hit-open" title="打开会话" aria-label="打开会话"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -291,7 +292,7 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
 <div class="dsss-hit" role="button" tabindex="0">
   <span class="dsss-hit-rail dsss-role-user dsss-kind-正文"></span>
   <span class="dsss-hit-body">
-    <span class="dsss-hit-snippet">支付回调偶发超时，先在灰度环境复现一下。</span>
+    <span class="dsss-hit-snippet">支付回调偶发<mark class='dsss-mark'>超时</mark>，先在灰度环境复现一下。</span>
     <span class="dsss-hit-meta">
       <span class="dsss-loc dsss-loc-ask">提问</span>
       <span class="dsss-hit-turn">第 42 轮</span>
@@ -299,64 +300,6 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
       <span class="dsss-hit-count">3 处</span>
       <span class="dsss-hit-time">11-12 18:06</span>
       
-    </span>
-  </span>
-  <button type="button" class="dsss-hit-open" title="打开会话" aria-label="打开会话"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-</div>
-<div class="dsss-hit" role="button" tabindex="0">
-  <span class="dsss-hit-rail dsss-role-assistant dsss-kind-文件"></span>
-  <span class="dsss-hit-body">
-    <span class="dsss-hit-snippet">config/gateway.yaml</span>
-    <span class="dsss-hit-meta">
-      <span class="dsss-loc dsss-loc-execute">执行</span>
-      <span class="dsss-hit-turn">第 42 轮</span>
-      <span class="dsss-hit-kind">文件</span>
-      <span class="dsss-hit-count">3 处</span>
-      <span class="dsss-hit-time">11-12 18:06</span>
-      <span class="dsss-hit-file">config/gateway.yaml</span>
-    </span>
-  </span>
-  <button type="button" class="dsss-hit-open" title="打开会话" aria-label="打开会话"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-</div>
-</section>
-<section class="dsss-group">
-  <div class="dsss-group-head" role="heading" aria-level="2" title="~/work/nova-docs">
-    <span class="dsss-group-mark is-live"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4.5 7A3.5 3.5 0 0 1 8 3.5h8A3.5 3.5 0 0 1 19.5 7v6a3.5 3.5 0 0 1-3.5 3.5H9.2L5 20v-3.8A3.5 3.5 0 0 1 4.5 12V7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.2 8.2h7.6M8.2 11.2h4.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".7"/></svg></span>
-    <span class="dsss-group-copy">
-      <span class="dsss-group-title">Nova 文档站重构</span>
-      <span class="dsss-group-path">~/work/nova-docs</span>
-    </span>
-    <span class="dsss-live">进行中</span>
-    <span class="dsss-group-count">2</span>
-    <span class="dsss-group-time">11-12 15:20</span>
-  </div>
-  
-<div class="dsss-hit" role="button" tabindex="0">
-  <span class="dsss-hit-rail dsss-role-assistant dsss-kind-工具调用"></span>
-  <span class="dsss-hit-body">
-    <span class="dsss-hit-snippet">apply_patch docs/migration.md  →  "把旧域名 <mark class='dsss-mark'>migration</mark> 说明里的 14 处链接换掉"</span>
-    <span class="dsss-hit-meta">
-      <span class="dsss-loc dsss-loc-execute">执行</span>
-      <span class="dsss-hit-turn">第 18 轮</span>
-      <span class="dsss-hit-kind">工具调用</span>
-      <span class="dsss-hit-count">3 处</span>
-      <span class="dsss-hit-time">11-12 15:18</span>
-      <span class="dsss-hit-file">docs/migration.md</span>
-    </span>
-  </span>
-  <button type="button" class="dsss-hit-open" title="打开会话" aria-label="打开会话"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-</div>
-<div class="dsss-hit" role="button" tabindex="0">
-  <span class="dsss-hit-rail dsss-role-assistant dsss-kind-文件"></span>
-  <span class="dsss-hit-body">
-    <span class="dsss-hit-snippet">docs/migration.md</span>
-    <span class="dsss-hit-meta">
-      <span class="dsss-loc dsss-loc-execute">执行</span>
-      <span class="dsss-hit-turn">第 18 轮</span>
-      <span class="dsss-hit-kind">文件</span>
-      <span class="dsss-hit-count">3 处</span>
-      <span class="dsss-hit-time">11-12 15:18</span>
-      <span class="dsss-hit-file">docs/migration.md</span>
     </span>
   </span>
   <button type="button" class="dsss-hit-open" title="打开会话" aria-label="打开会话"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -370,18 +313,18 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
       <span class="dsss-group-path">~/work/insight</span>
     </span>
     <span class="dsss-live">进行中</span>
-    <span class="dsss-group-count">3</span>
+    <span class="dsss-group-count">2</span>
     <span class="dsss-group-time">11-11 21:08</span>
   </div>
   
 <div class="dsss-hit" role="button" tabindex="0">
-  <span class="dsss-hit-rail dsss-role-assistant dsss-kind-思考"></span>
+  <span class="dsss-hit-rail dsss-role-assistant dsss-kind-推理"></span>
   <span class="dsss-hit-body">
-    <span class="dsss-hit-snippet">P95 延迟要拆成读/写两条曲线，否则 <mark class='dsss-mark'>timeout</mark> 和慢查询会混在一起。</span>
+    <span class="dsss-hit-snippet">P95 延迟要拆成读/写两条曲线，否则 <mark class='dsss-mark'>超时</mark> 和慢查询会混在一起。</span>
     <span class="dsss-hit-meta">
       <span class="dsss-loc dsss-loc-thought">思考</span>
       <span class="dsss-hit-turn">第 31 轮</span>
-      <span class="dsss-hit-kind">思考</span>
+      <span class="dsss-hit-kind">推理</span>
       <span class="dsss-hit-count">3 处</span>
       <span class="dsss-hit-time">11-11 21:03</span>
       
@@ -392,7 +335,7 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
 <div class="dsss-hit" role="button" tabindex="0">
   <span class="dsss-hit-rail dsss-role-assistant dsss-kind-正文"></span>
   <span class="dsss-hit-body">
-    <span class="dsss-hit-snippet">已把 latency 拆成 read / write 两个 series，图例和提示都改好了。</span>
+    <span class="dsss-hit-snippet">已把 latency 拆成 read / write 两个 series，<mark class='dsss-mark'>超时</mark> 标记也分开了。</span>
     <span class="dsss-hit-meta">
       <span class="dsss-loc dsss-loc-answer">回答</span>
       <span class="dsss-hit-turn">第 31 轮</span>
@@ -422,7 +365,7 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
     <span class="dsss-preview-title">支付网关灰度迁移</span>
     <span class="dsss-preview-sub">~/work/payments · 11-12 18:12 · 第 43 轮</span>
   </div>
-  <div class="dsss-preview-text">把 gateway.timeout 从 8s 调到 15s，先灰度 10% 流量。
+  <div class="dsss-preview-text">这次 <mark class='dsss-mark'>超时</mark> 是连接池等待导致的：把 gateway.timeout 从 8s 调到 15s，先灰度 10% 流量。
 
 - 回调重试 3 → 5 次
 - 告警阈值 1.2s，超过 3 分钟持续触发

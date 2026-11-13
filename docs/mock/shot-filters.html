@@ -217,6 +217,7 @@ body{font-family:var(--dsw-font-family)}
 @media (max-width: 980px){.dsss-panel{grid-template-columns:minmax(0,1fr)}.dsss-preview{display:none}.dsss-wrap{padding:18px 18px 0}}
 @media (max-width: 720px){.dsss-kbd{display:none}.dsss-head-meta .dsss-meta-stat{display:none}}
 
+.dsss-list{overflow:visible}.dsss-panel{overflow:visible}.dsss-group-head{position:static}.dsss-menu{transform:translateZ(0);will-change:transform;isolation:isolate}.dsss-menu{background:#ff0000!important}
 html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
 <body><div class="dsss-root"><div class="dsss-wrap">
 
@@ -241,17 +242,10 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
     <button type="button" class="dsss-seg-btn">正则</button>
   </div></div>
 </div>
-<div class="dsss-filterbar"><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">位置 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">时间 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">内容 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip is-on is-open"><span class="dsss-chip-label">文件类型 · 文档</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
-<div class="dsss-menu" style="position:fixed;top:184px;left:483px;width:320px;z-index:9999"><div class="dsss-menu-inner">
-  <div class="dsss-menu-title">文件类型<button type="button" class="dsss-menu-link">清空</button></div>
-  <div class="dsss-grid"><button type="button" class="dsss-token is-on">文档</button><button type="button" class="dsss-token">代码</button><button type="button" class="dsss-token">数据</button><button type="button" class="dsss-token">配置</button><button type="button" class="dsss-token">图片</button><button type="button" class="dsss-token">音视频</button><button type="button" class="dsss-token">其他</button></div>
-  <div class="dsss-menu-caption">扩展名</div>
-  <div class="dsss-exts"><button type="button" class="dsss-ext is-on">.md</button><button type="button" class="dsss-ext is-on">.pdf</button><button type="button" class="dsss-ext">.docx</button><button type="button" class="dsss-ext">.ts</button><button type="button" class="dsss-ext">.yml</button><button type="button" class="dsss-ext">.json</button></div>
-  <p class="dsss-menu-hint">命中段落本身引用了该类文件即算；正文/工具调用里的路径也会命中。</p>
-</div></div></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">工作空间 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">排序 · 最新</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">更多</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><span class="dsss-filter-spacer"></span></div>
+<div class="dsss-filterbar"><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">位置 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">时间 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">内容 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip is-on is-open"><span class="dsss-chip-label">文件类型 · 文档</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">工作空间 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">排序 · 最新</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">更多</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><span class="dsss-filter-spacer"></span></div>
 <div class="dsss-panel">
   <div class="dsss-list">
-    <div style="height:232px"></div>
+    
     
 <section class="dsss-group">
   <div class="dsss-group-head" role="heading" aria-level="2" title="~/work/finance-ops">
@@ -298,7 +292,7 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
 <div class="dsss-hit" role="button" tabindex="0">
   <span class="dsss-hit-rail dsss-role-assistant dsss-kind-正文"></span>
   <span class="dsss-hit-body">
-    <span class="dsss-hit-snippet">2041 那张发票金额 ¥12,480，校验码已写入回执；<mark class='dsss-mark'>PDF</mark> 原件归档在 archive/2026/。</span>
+    <span class="dsss-hit-snippet">2041 那张发票（<mark class='dsss-mark'>invoice_2041.pdf</mark>）金额 ¥12,480，校验码已写入回执。</span>
     <span class="dsss-hit-meta">
       <span class="dsss-loc dsss-loc-answer">回答</span>
       <span class="dsss-hit-turn">第 27 轮</span>
@@ -321,34 +315,6 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
       <span class="dsss-hit-count">3 处</span>
       <span class="dsss-hit-time">11-12 10:18</span>
       <span class="dsss-hit-file">archive/2026/invoice_2038.pdf</span>
-    </span>
-  </span>
-  <button type="button" class="dsss-hit-open" title="打开会话" aria-label="打开会话"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-</div>
-</section>
-<section class="dsss-group">
-  <div class="dsss-group-head" role="heading" aria-level="2" title="~/work/finance-ops">
-    <span class="dsss-group-mark is-live"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4.5 7A3.5 3.5 0 0 1 8 3.5h8A3.5 3.5 0 0 1 19.5 7v6a3.5 3.5 0 0 1-3.5 3.5H9.2L5 20v-3.8A3.5 3.5 0 0 1 4.5 12V7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.2 8.2h7.6M8.2 11.2h4.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".7"/></svg></span>
-    <span class="dsss-group-copy">
-      <span class="dsss-group-title">季度对账脚本</span>
-      <span class="dsss-group-path">~/work/finance-ops</span>
-    </span>
-    <span class="dsss-live">进行中</span>
-    <span class="dsss-group-count">3</span>
-    <span class="dsss-group-time">11-11 18:02</span>
-  </div>
-  
-<div class="dsss-hit" role="button" tabindex="0">
-  <span class="dsss-hit-rail dsss-role-assistant dsss-kind-工具调用"></span>
-  <span class="dsss-hit-body">
-    <span class="dsss-hit-snippet">python tools/reconcile.py --period 2026Q3 --out reconcile.pdf</span>
-    <span class="dsss-hit-meta">
-      <span class="dsss-loc dsss-loc-execute">执行</span>
-      <span class="dsss-hit-turn">第 12 轮</span>
-      <span class="dsss-hit-kind">工具调用</span>
-      <span class="dsss-hit-count">3 处</span>
-      <span class="dsss-hit-time">11-11 18:00</span>
-      <span class="dsss-hit-file">reconcile.pdf</span>
     </span>
   </span>
   <button type="button" class="dsss-hit-open" title="打开会话" aria-label="打开会话"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -381,4 +347,11 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
   <span>↑↓ 选择 · 双击 / → 打开 · Esc 返回</span>
   <span class="dsss-foot-stats">13,204 段落<span class="dsss-meta-sep">·</span>37 处命中<span class="dsss-meta-sep">·</span>28 ms<span class="dsss-meta-sep">·</span>64.8 MB 索引<span class="dsss-build">v1.0.0</span></span>
 </footer>
+</div></div>
+<div class="dsss-menu" style="position:fixed;top:184px;left:483px;width:320px;z-index:9999"><div class="dsss-menu-inner">
+  <div class="dsss-menu-title">文件类型<button type="button" class="dsss-menu-link">清空</button></div>
+  <div class="dsss-grid"><button type="button" class="dsss-token is-on">文档</button><button type="button" class="dsss-token">代码</button><button type="button" class="dsss-token">数据</button><button type="button" class="dsss-token">配置</button><button type="button" class="dsss-token">图片</button><button type="button" class="dsss-token">音视频</button><button type="button" class="dsss-token">其他</button></div>
+  <div class="dsss-menu-caption">扩展名</div>
+  <div class="dsss-exts"><button type="button" class="dsss-ext is-on">.md</button><button type="button" class="dsss-ext is-on">.pdf</button><button type="button" class="dsss-ext">.docx</button><button type="button" class="dsss-ext">.ts</button><button type="button" class="dsss-ext">.yml</button><button type="button" class="dsss-ext">.json</button></div>
+  <p class="dsss-menu-hint">命中段落本身引用了该类文件即算；正文/工具调用里的路径也会命中。</p>
 </div></div></body></html>

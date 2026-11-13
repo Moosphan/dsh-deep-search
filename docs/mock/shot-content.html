@@ -217,6 +217,7 @@ body{font-family:var(--dsw-font-family)}
 @media (max-width: 980px){.dsss-panel{grid-template-columns:minmax(0,1fr)}.dsss-preview{display:none}.dsss-wrap{padding:18px 18px 0}}
 @media (max-width: 720px){.dsss-kbd{display:none}.dsss-head-meta .dsss-meta-stat{display:none}}
 
+.dsss-list{overflow:visible}.dsss-panel{overflow:visible}.dsss-group-head{position:static}.dsss-menu{transform:translateZ(0);will-change:transform;isolation:isolate}.dsss-menu{background:#ff0000!important}
 html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
 <body><div class="dsss-root"><div class="dsss-wrap">
 
@@ -241,14 +242,10 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
     <button type="button" class="dsss-seg-btn">正则</button>
   </div></div>
 </div>
-<div class="dsss-filterbar"><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">位置 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">时间 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip is-on is-open"><span class="dsss-chip-label">内容 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
-<div class="dsss-menu" style="position:fixed;top:184px;left:390px;width:252px;z-index:9999"><div class="dsss-menu-inner">
-  <div class="dsss-menu-title">内容<button type="button" class="dsss-menu-link">重置</button></div>
-  <button type="button" class="dsss-toggle-row"><span class="dsss-toggle-copy"><span class="dsss-toggle-label">正文</span></span><span class="dsss-switch is-on"><span class="dsss-switch-dot"></span></span></button><button type="button" class="dsss-toggle-row"><span class="dsss-toggle-copy"><span class="dsss-toggle-label">文件</span></span><span class="dsss-switch is-on"><span class="dsss-switch-dot"></span></span></button><button type="button" class="dsss-toggle-row"><span class="dsss-toggle-copy"><span class="dsss-toggle-label">工具调用</span></span><span class="dsss-switch is-on"><span class="dsss-switch-dot"></span></span></button><button type="button" class="dsss-toggle-row"><span class="dsss-toggle-copy"><span class="dsss-toggle-label">工具输出</span></span><span class="dsss-switch is-on"><span class="dsss-switch-dot"></span></span></button><button type="button" class="dsss-toggle-row"><span class="dsss-toggle-copy"><span class="dsss-toggle-label">附件</span></span><span class="dsss-switch is-on"><span class="dsss-switch-dot"></span></span></button><button type="button" class="dsss-toggle-row"><span class="dsss-toggle-copy"><span class="dsss-toggle-label">摘要</span></span><span class="dsss-switch is-on"><span class="dsss-switch-dot"></span></span></button><button type="button" class="dsss-toggle-row"><span class="dsss-toggle-copy"><span class="dsss-toggle-label">思考</span></span><span class="dsss-switch is-on"><span class="dsss-switch-dot"></span></span></button>
-</div></div></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">文件类型 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">工作空间 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">排序 · 最新</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">更多</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><span class="dsss-filter-spacer"></span></div>
+<div class="dsss-filterbar"><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">位置 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">时间 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip is-on is-open"><span class="dsss-chip-label">内容 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">文件类型 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">工作空间 · 全部</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">排序 · 最新</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><div class="dsss-chipwrap"><button type="button" class="dsss-chip"><span class="dsss-chip-label">更多</span><span class="dsss-chip-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div><span class="dsss-filter-spacer"></span></div>
 <div class="dsss-panel">
   <div class="dsss-list">
-    <div style="height:232px"></div>
+    
     
 <section class="dsss-group">
   <div class="dsss-group-head" role="heading" aria-level="2" title="~/work/payments">
@@ -265,7 +262,7 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
 <div class="dsss-hit is-selected" role="button" tabindex="0">
   <span class="dsss-hit-rail dsss-role-assistant dsss-kind-推理"></span>
   <span class="dsss-hit-body">
-    <span class="dsss-hit-snippet">先确认超时是不是连接池耗尽，再看网关自己的 <mark class='dsss-mark'>timeout</mark>。</span>
+    <span class="dsss-hit-snippet">先确认<mark class='dsss-mark'>超时</mark>是不是连接池耗尽，再看网关自己的 timeout。</span>
     <span class="dsss-hit-meta">
       <span class="dsss-loc dsss-loc-thought">思考</span>
       <span class="dsss-hit-turn">第 43 轮</span>
@@ -280,7 +277,7 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
 <div class="dsss-hit" role="button" tabindex="0">
   <span class="dsss-hit-rail dsss-role-user dsss-kind-正文"></span>
   <span class="dsss-hit-body">
-    <span class="dsss-hit-snippet">支付回调偶发超时，先在灰度环境复现一下。</span>
+    <span class="dsss-hit-snippet">支付回调偶发<mark class='dsss-mark'>超时</mark>，先在灰度环境复现一下。</span>
     <span class="dsss-hit-meta">
       <span class="dsss-loc dsss-loc-ask">提问</span>
       <span class="dsss-hit-turn">第 42 轮</span>
@@ -295,7 +292,7 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
 <div class="dsss-hit" role="button" tabindex="0">
   <span class="dsss-hit-rail dsss-role-assistant dsss-kind-工具调用"></span>
   <span class="dsss-hit-body">
-    <span class="dsss-hit-snippet">grep -R "timeout" services/checkout | head -20</span>
+    <span class="dsss-hit-snippet">grep -R "<mark class='dsss-mark'>超时</mark>" logs/gateway | head -20</span>
     <span class="dsss-hit-meta">
       <span class="dsss-loc dsss-loc-execute">执行</span>
       <span class="dsss-hit-turn">第 42 轮</span>
@@ -310,7 +307,7 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
 <div class="dsss-hit" role="button" tabindex="0">
   <span class="dsss-hit-rail dsss-role-assistant dsss-kind-正文"></span>
   <span class="dsss-hit-body">
-    <span class="dsss-hit-snippet">把 <mark class='dsss-mark'>timeout</mark> 调到 15s，灰度 10%，观察 30 分钟。</span>
+    <span class="dsss-hit-snippet">把 gateway.timeout 调到 15s；这次<mark class='dsss-mark'>超时</mark>先灰度 10%，观察 30 分钟。</span>
     <span class="dsss-hit-meta">
       <span class="dsss-loc dsss-loc-answer">回答</span>
       <span class="dsss-hit-turn">第 43 轮</span>
@@ -368,7 +365,7 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
     <span class="dsss-preview-title">支付网关灰度迁移</span>
     <span class="dsss-preview-sub">~/work/payments · 11-12 18:10 · 第 43 轮</span>
   </div>
-  <div class="dsss-preview-text">先确认超时是不是连接池耗尽，再看网关自己的 timeout。
+  <div class="dsss-preview-text">先确认<mark class='dsss-mark'>超时</mark>是不是连接池耗尽，再看网关自己的 timeout。
 
 判断顺序：
 1. 看 p99 连接等待时间
@@ -385,4 +382,8 @@ html,body{width:1600px;height:1000px;overflow:hidden}</style></head>
   <span>↑↓ 选择 · 双击 / → 打开 · Esc 返回</span>
   <span class="dsss-foot-stats">13,204 段落<span class="dsss-meta-sep">·</span>37 处命中<span class="dsss-meta-sep">·</span>28 ms<span class="dsss-meta-sep">·</span>64.8 MB 索引<span class="dsss-build">v1.0.0</span></span>
 </footer>
+</div></div>
+<div class="dsss-menu" style="position:fixed;top:184px;left:390px;width:252px;z-index:9999"><div class="dsss-menu-inner">
+  <div class="dsss-menu-title">内容<button type="button" class="dsss-menu-link">重置</button></div>
+  <button type="button" class="dsss-toggle-row"><span class="dsss-toggle-copy"><span class="dsss-toggle-label">正文</span></span><span class="dsss-switch is-on"><span class="dsss-switch-dot"></span></span></button><button type="button" class="dsss-toggle-row"><span class="dsss-toggle-copy"><span class="dsss-toggle-label">文件</span></span><span class="dsss-switch is-on"><span class="dsss-switch-dot"></span></span></button><button type="button" class="dsss-toggle-row"><span class="dsss-toggle-copy"><span class="dsss-toggle-label">工具调用</span></span><span class="dsss-switch is-on"><span class="dsss-switch-dot"></span></span></button><button type="button" class="dsss-toggle-row"><span class="dsss-toggle-copy"><span class="dsss-toggle-label">工具输出</span></span><span class="dsss-switch is-on"><span class="dsss-switch-dot"></span></span></button><button type="button" class="dsss-toggle-row"><span class="dsss-toggle-copy"><span class="dsss-toggle-label">附件</span></span><span class="dsss-switch is-on"><span class="dsss-switch-dot"></span></span></button><button type="button" class="dsss-toggle-row"><span class="dsss-toggle-copy"><span class="dsss-toggle-label">摘要</span></span><span class="dsss-switch is-on"><span class="dsss-switch-dot"></span></span></button><button type="button" class="dsss-toggle-row"><span class="dsss-toggle-copy"><span class="dsss-toggle-label">思考</span></span><span class="dsss-switch is-on"><span class="dsss-switch-dot"></span></span></button>
 </div></div></body></html>

@@ -193,8 +193,8 @@ def footer(scanned="13,204 段落", hits="37 处命中", ms="28 ms", index="64.8
   <span class="dsss-foot-stats">{scanned}<span class="dsss-meta-sep">·</span>{hits}<span class="dsss-meta-sep">·</span>{ms}<span class="dsss-meta-sep">·</span>{index}<span class="dsss-build">v1.0.0</span></span>
 </footer>"""
 
-def page(name, query, groups_html, preview_html, regex=False, file_on=False, content_on=False, open_menu=None, menu=None, status="就绪", count="42 会话", seg="86,420 段落", footer_html=None, panel_extra="", spacer=""):
-    body = f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><style>{TOKENS}\n{CSS}\nhtml,body{{width:1600px;height:1000px;overflow:hidden}}</style></head>
+def page(name, query, groups_html, preview_html, regex=False, file_on=False, content_on=False, open_menu=None, menu=None, status="就绪", count="42 会话", seg="86,420 段落", footer_html=None, panel_extra="", spacer="", mock_css="", menu_overlay=""):
+    body = f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><style>{TOKENS}\n{CSS}\n{mock_css}\nhtml,body{{width:1600px;height:1000px;overflow:hidden}}</style></head>
 <body><div class="dsss-root"><div class="dsss-wrap">
 {head(status, count, seg)}
 {searchbar(query, regex)}
@@ -207,7 +207,7 @@ def page(name, query, groups_html, preview_html, regex=False, file_on=False, con
   {preview_html}
 </div>
 {footer_html or footer()}
-</div></div></body></html>"""
+</div></div>{menu_overlay}</body></html>"""
     path = MOCK / f"{name}.html"
     path.write_text(body)
     png = DOCS / f"{name}.png"
@@ -217,57 +217,68 @@ def page(name, query, groups_html, preview_html, regex=False, file_on=False, con
         f"--screenshot={png}", f"file://{path}",
     ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
+def menu_overlay(name, menu_html):
+    body = f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><style>{TOKENS}\n{CSS}\nhtml,body{{margin:0;width:1600px;height:1000px;overflow:hidden;background:transparent}}</style></head><body>{menu_html}</body></html>"""
+    path = MOCK / f"{name}.html"
+    path.write_text(body)
+    png = MOCK / f"{name}.png"
+    subprocess.run([
+        CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--no-first-run",
+        "--default-background-color=00000000",
+        "--user-data-dir=/tmp/chrome-deep-search-menu", "--window-size=1600,1000",
+        f"--screenshot={png}", f"file://{path}",
+    ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return png
+
+def composite(base, overlay, out):
+    from PIL import Image
+    image = Image.open(base).convert("RGBA")
+    image.alpha_composite(Image.open(overlay).convert("RGBA"))
+    image.save(out)
+
 # 1. main
 main_groups = group(
-    "支付网关灰度迁移", "~/work/payments", 4, "11-12 18:42",
-    hit("answer", 43, "正文", "11-12 18:12", "把 [gateway.timeout] 从 8s 调到 15s，先灰度 10% 流量；回调重试 3 → 5 次，观察 30 分钟。", "assistant", True, "config/gateway.yaml")
-    + hit("execute", 42, "工具调用", "11-12 18:07", 'grep -R "[timeout]" services/checkout | head -20', "assistant", False, "services/checkout/handler.ts")
-    + hit("ask", 42, "正文", "11-12 18:06", "支付回调偶发超时，先在灰度环境复现一下。", "user")
-    + hit("execute", 42, "文件", "11-12 18:06", "config/gateway.yaml", "assistant", False, "config/gateway.yaml"),
+    "支付网关灰度迁移", "~/work/payments", 3, "11-12 18:42",
+    hit("answer", 43, "正文", "11-12 18:12", "这次 [超时] 是连接池等待导致的：把 gateway.timeout 从 8s 调到 15s，先灰度 10% 流量，观察 30 分钟。", "assistant", True, "config/gateway.yaml")
+    + hit("execute", 42, "工具调用", "11-12 18:07", 'grep -R "[超时]" logs/gateway | head -20', "assistant", False, "logs/gateway/2026-11-12.log")
+    + hit("ask", 42, "正文", "11-12 18:06", "支付回调偶发[超时]，先在灰度环境复现一下。", "user"),
 ) + group(
-    "Nova 文档站重构", "~/work/nova-docs", 2, "11-12 15:20",
-    hit("execute", 18, "工具调用", "11-12 15:18", 'apply_patch docs/migration.md  →  "把旧域名 [migration] 说明里的 14 处链接换掉"', "assistant", False, "docs/migration.md")
-    + hit("execute", 18, "文件", "11-12 15:18", "docs/migration.md", "assistant", False, "docs/migration.md"),
-) + group(
-    "指标看板改版", "~/work/insight", 3, "11-11 21:08",
-    hit("thought", 31, "思考", "11-11 21:03", "P95 延迟要拆成读/写两条曲线，否则 [timeout] 和慢查询会混在一起。", "assistant")
-    + hit("answer", 31, "正文", "11-11 21:08", "已把 latency 拆成 read / write 两个 series，图例和提示都改好了。", "assistant", False, "src/charts/latency.ts"),
+    "指标看板改版", "~/work/insight", 2, "11-11 21:08",
+    hit("thought", 31, "推理", "11-11 21:03", "P95 延迟要拆成读/写两条曲线，否则 [超时] 和慢查询会混在一起。", "assistant")
+    + hit("answer", 31, "正文", "11-11 21:08", "已把 latency 拆成 read / write 两个 series，[超时] 标记也分开了。", "assistant", False, "src/charts/latency.ts"),
 )
 main_preview = preview(
     "answer", "正文", "支付网关灰度迁移", "~/work/payments · 11-12 18:12 · 第 43 轮",
-    "把 gateway.timeout 从 8s 调到 15s，先灰度 10% 流量。\n\n- 回调重试 3 → 5 次\n- 告警阈值 1.2s，超过 3 分钟持续触发\n- 观察 30 分钟，无异常再放量到 50%\n\n配置文件在 config/gateway.yaml，回滚脚本已留在 deploy/rollback.sh。",
+    "这次 [超时] 是连接池等待导致的：把 gateway.timeout 从 8s 调到 15s，先灰度 10% 流量。\n\n- 回调重试 3 → 5 次\n- 告警阈值 1.2s，超过 3 分钟持续触发\n- 观察 30 分钟，无异常再放量到 50%\n\n配置文件在 config/gateway.yaml，回滚脚本已留在 deploy/rollback.sh。",
     [(".yaml", "config/gateway.yaml"), (".ts", "services/checkout/handler.ts")],
 )
 page("shot-main", "超时", main_groups, main_preview)
 
 # 2. file type popover
 filter_groups = group(
-    "财务归档自动化", "~/work/finance-ops", 8, "11-12 10:24",
+    "财务归档自动化", "~/work/finance-ops", 4, "11-12 10:24",
     hit("execute", 27, "文件", "11-12 10:22", "invoices/invoice_2041.pdf", "assistant", True, "invoices/invoice_2041.pdf")
     + hit("execute", 27, "工具调用", "11-12 10:21", 'pdfinfo invoices/invoice_2041.pdf | head -12', "assistant", False, "invoices/invoice_2041.pdf")
-    + hit("answer", 27, "正文", "11-12 10:24", "2041 那张发票金额 ¥12,480，校验码已写入回执；[PDF] 原件归档在 archive/2026/。", "assistant", False, "invoices/invoice_2041.pdf")
+    + hit("answer", 27, "正文", "11-12 10:24", "2041 那张发票（[invoice_2041.pdf]）金额 ¥12,480，校验码已写入回执。", "assistant", False, "invoices/invoice_2041.pdf")
     + hit("execute", 26, "文件", "11-12 10:18", "archive/2026/invoice_2038.pdf", "assistant", False, "archive/2026/invoice_2038.pdf"),
-) + group(
-    "季度对账脚本", "~/work/finance-ops", 3, "11-11 18:02",
-    hit("execute", 12, "工具调用", "11-11 18:00", 'python tools/reconcile.py --period 2026Q3 --out reconcile.pdf', "assistant", False, "reconcile.pdf"),
 )
 filter_preview = preview(
     "execute", "文件", "财务归档自动化", "~/work/finance-ops · 11-12 10:22 · 第 27 轮",
     "invoices/invoice_2041.pdf",
     [(".pdf", "invoices/invoice_2041.pdf"), (".pdf", "archive/2026/invoice_2038.pdf")],
 )
-page("shot-filters", "invoice", filter_groups, filter_preview, file_on=True, open_menu="files", menu=file_menu(),
-     count="42 会话", seg="86,420 段落", spacer='<div style="height:232px"></div>')
+page("shot-filters-base", "invoice", filter_groups, filter_preview, file_on=True, open_menu="files", menu="")
+composite(DOCS / "shot-filters-base.png", menu_overlay("menu-filters", file_menu()), DOCS / "shot-filters.png")
 
 # 3. regex + document filter
 regex_groups = group(
-    "财务归档自动化", "~/work/finance-ops", 8, "11-12 10:24",
+    "财务归档自动化", "~/work/finance-ops", 4, "11-12 10:24",
     hit("execute", 27, "文件", "11-12 10:22", "invoices/[invoice_2041.pdf]", "assistant", True, "invoices/invoice_2041.pdf")
     + hit("execute", 27, "工具调用", "11-12 10:21", 'pdfinfo invoices/[invoice_2041.pdf] | head -12', "assistant", False, "invoices/invoice_2041.pdf")
-    + hit("answer", 27, "正文", "11-12 10:24", "2041 那张发票金额 ¥12,480，校验码已写入回执；PDF 原件归档在 archive/2026/。", "assistant", False, "invoices/invoice_2041.pdf")
+    + hit("answer", 27, "正文", "11-12 10:24", "2041 那张发票金额 ¥12,480，[invoice_2041.pdf] 已归档到 archive/2026/。", "assistant", False, "invoices/invoice_2041.pdf")
     + hit("execute", 26, "文件", "11-12 10:18", "archive/2026/[invoice_2038.pdf]", "assistant", False, "archive/2026/invoice_2038.pdf"),
 ) + group(
-    "报销单模板整理", "~/work/finance-ops", 2, "11-11 16:40",
+    "报销单模板整理", "~/work/finance-ops", 1, "11-11 16:40",
     hit("answer", 8, "正文", "11-11 16:40", "把 [invoice_2026.pdf] 系列模板合并成一张，字段按季度变化。", "assistant"),
 )
 regex_preview = preview(
@@ -279,20 +290,27 @@ page("shot-regex", r"invoice_\d{4}\.pdf", regex_groups, regex_preview, regex=Tru
 
 # 4. content popover + labels
 content_groups = group(
-    "支付网关灰度迁移", "~/work/payments", 5, "11-12 18:42",
-    hit("thought", 43, "推理", "11-12 18:10", "先确认超时是不是连接池耗尽，再看网关自己的 [timeout]。", "assistant", True)
-    + hit("ask", 42, "正文", "11-12 18:06", "支付回调偶发超时，先在灰度环境复现一下。", "user")
-    + hit("execute", 42, "工具调用", "11-12 18:07", 'grep -R "timeout" services/checkout | head -20', "assistant", False, "services/checkout/handler.ts")
-    + hit("answer", 43, "正文", "11-12 18:12", "把 [timeout] 调到 15s，灰度 10%，观察 30 分钟。", "assistant"),
+    "支付网关灰度迁移", "~/work/payments", 4, "11-12 18:42",
+    hit("thought", 43, "推理", "11-12 18:10", "先确认[超时]是不是连接池耗尽，再看网关自己的 timeout。", "assistant", True)
+    + hit("ask", 42, "正文", "11-12 18:06", "支付回调偶发[超时]，先在灰度环境复现一下。", "user")
+    + hit("execute", 42, "工具调用", "11-12 18:07", 'grep -R "[超时]" logs/gateway | head -20', "assistant", False, "services/checkout/handler.ts")
+    + hit("answer", 43, "正文", "11-12 18:12", "把 gateway.timeout 调到 15s；这次[超时]先灰度 10%，观察 30 分钟。", "assistant"),
 ) + group(
     "发布清单", "~/work/meta", 1, "11-11 09:30",
     hit("meta", 0, "会话", "11-11 09:30", "发布前检查：回滚脚本 / 告警阈值 / [超时] 观测面板", "system"),
 )
 content_preview = preview(
     "thought", "推理", "支付网关灰度迁移", "~/work/payments · 11-12 18:10 · 第 43 轮",
-    "先确认超时是不是连接池耗尽，再看网关自己的 timeout。\n\n判断顺序：\n1. 看 p99 连接等待时间\n2. 对照下游 5xx\n3. 最后才动 gateway.timeout\n\n如果只是灰度流量，先别改全局配置。",
+    "先确认[超时]是不是连接池耗尽，再看网关自己的 timeout。\n\n判断顺序：\n1. 看 p99 连接等待时间\n2. 对照下游 5xx\n3. 最后才动 gateway.timeout\n\n如果只是灰度流量，先别改全局配置。",
     [(".yaml", "config/gateway.yaml")],
 )
-page("shot-content", "超时", content_groups, content_preview, content_on=True, open_menu="content", menu=content_menu(), spacer='<div style="height:232px"></div>')
+page("shot-content-base", "超时", content_groups, content_preview, content_on=True, open_menu="content", menu="")
+composite(DOCS / "shot-content-base.png", menu_overlay("menu-content", content_menu()), DOCS / "shot-content.png")
 
-print("rendered", [p.name for p in DOCS.glob("shot-*.png")])
+for name in ("shot-filters-base", "shot-content-base"):
+    (DOCS / (name + ".png")).unlink(missing_ok=True)
+    (MOCK / (name + ".html")).unlink(missing_ok=True)
+for name in ("menu-filters", "menu-content"):
+    for ext in (".png", ".html"):
+        (MOCK / (name + ext)).unlink(missing_ok=True)
+print("rendered", [p.name for p in DOCS.glob("shot-*.png") if "-base" not in p.name])
