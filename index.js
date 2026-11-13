@@ -221,6 +221,25 @@ function warn(message, error) {
 
 // #region Index ----------------------------------------------------------------
 
+/** Node 20 has no zstd API; use gzip for cache files there. Reads probe both codecs. */
+const HAS_ZSTD = typeof zlib.zstdCompressSync === 'function'
+
+function packCache(text) {
+  const buffer = Buffer.from(text, 'utf8')
+  return HAS_ZSTD ? zlib.zstdCompressSync(buffer) : zlib.gzipSync(buffer)
+}
+
+function unpackCache(buffer) {
+  if (HAS_ZSTD) {
+    try {
+      return zlib.zstdDecompressSync(buffer)
+    } catch {
+      /* Cache written by an older Node without zstd. */
+    }
+  }
+  return zlib.gunzipSync(buffer)
+}
+
 function createIndex(ctx) {
   /** id → { id, cwd, title, createdAt, updatedAt, rev, live, docs, chars } */
   const entries = new Map()
@@ -267,7 +286,7 @@ function createIndex(ctx) {
         cursor += 1
         if (meta === null || typeof meta !== 'object' || typeof meta.id !== 'string') continue
         try {
-          const raw = zlib.zstdDecompressSync(await fs.readFile(path.join(cacheDir, cacheName(meta.id))))
+          const raw = unpackCache(await fs.readFile(path.join(cacheDir, cacheName(meta.id))))
           const entry = JSON.parse(raw.toString('utf8'))
           if (entry !== null && Array.isArray(entry.docs)) entries.set(meta.id, entry)
         } catch {
@@ -398,7 +417,7 @@ function createIndex(ctx) {
     try {
       await fs.mkdir(cacheDir, { recursive: true, mode: 0o700 })
       const body = JSON.stringify(entry)
-      const packed = zlib.zstdCompressSync(Buffer.from(body, 'utf8'))
+      const packed = packCache(body)
       const target = path.join(cacheDir, cacheName(entry.id))
       const temporary = `${target}.${process.pid}.tmp`
       await fs.writeFile(temporary, packed, { mode: 0o600 })
