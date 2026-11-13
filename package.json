@@ -1,0 +1,68 @@
+{
+  "name": "dsh-deep-search",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Deep Search（深海搜索）：DeepSeek Harness 全局会话检索插件。遍历所有会话历史，按关键词/正则与时间、工作空间、提问/回答/执行、文件类型组合筛选，流式返回并精确跳回原轮次或工具调用。",
+  "license": "MIT",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md",
+    "CHANGELOG.md",
+    "docs/*.png",
+    "LICENSE"
+  ],
+  "scripts": {
+    "check": "node --check index.js && node --check client.js",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": []
+    }
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "deep-search",
+    "deepseek-search",
+    "global-search",
+    "session-search",
+    "full-text",
+    "regex",
+    "local-first",
+    "conversation-history"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Moosphan/dsh-deep-search.git"
+  },
+  "homepage": "https://github.com/Moosphan/dsh-deep-search#readme",
+  "bugs": {
+    "url": "https://github.com/Moosphan/dsh-deep-search/issues"
+  },
+  "author": "Moosphan",
+  "engines": {
+    "node": ">=20",
+    "dsh": ">=0.2.0-rc.1"
+  },
+  "icon": "./icon.svg",
+  "publishConfig": {
+    "access": "public"
+  }
+}
