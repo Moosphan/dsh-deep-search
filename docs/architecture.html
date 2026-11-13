@@ -1,0 +1,53 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><style>
+*{box-sizing:border-box}html,body{margin:0;width:1500px;height:520px;overflow:hidden}
+body{background:#0b0e14;color:#f4f7ff;font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;position:relative}
+.bg{position:absolute;inset:0;background:radial-gradient(800px 400px at 50% 0%,rgba(65,118,230,.18),transparent 70%),linear-gradient(180deg,#0c1019,#080b12)}
+.grid{position:absolute;inset:0;opacity:.22;background-image:linear-gradient(rgba(120,150,210,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(120,150,210,.10) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(180deg,black,transparent 90%)}
+.wrap{position:relative;padding:36px 48px}
+.head{display:flex;align-items:baseline;gap:14px}
+h1{font-size:22px;font-weight:600;margin:0;letter-spacing:.02em}
+.sub{font-family:"SF Mono",Menlo,monospace;font-size:11px;color:#6e82a4;letter-spacing:.12em;text-transform:uppercase}
+.flow{display:flex;align-items:stretch;gap:0;margin-top:44px}
+.box{flex:1;min-width:0;border:1px solid #263148;border-radius:10px;background:linear-gradient(180deg,rgba(22,30,46,.92),rgba(15,21,33,.92));padding:18px 16px 16px;position:relative}
+.box.accent{border-color:rgba(86,134,254,.55);box-shadow:0 0 0 1px rgba(86,134,254,.12),0 12px 32px -18px rgba(86,134,254,.45)}
+.k{font-family:"SF Mono",Menlo,monospace;font-size:10px;letter-spacing:.14em;color:#6e82a4;text-transform:uppercase}
+.t{font-size:15px;font-weight:600;margin-top:8px;color:#f4f7ff}
+.d{font-family:"SF Mono",Menlo,monospace;font-size:11px;line-height:1.7;color:#9fb2d2;margin-top:8px;white-space:pre-line}
+.arrow{width:34px;display:flex;align-items:center;justify-content:center;color:#4868b2;flex:none}
+.arrow svg{width:22px;height:22px}
+.notes{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap}
+.note{display:inline-flex;align-items:center;gap:8px;border:1px solid #263148;border-radius:6px;background:rgba(18,26,43,.6);padding:7px 11px;font-family:"SF Mono",Menlo,monospace;font-size:10px;color:#9fb2d2;letter-spacing:.03em}
+.note b{color:#78e0a1;font-weight:500}
+.dot{width:6px;height:6px;border-radius:50%;background:#5686fe;box-shadow:0 0 10px #5686fe}
+</style></head><body>
+<div class="bg"></div><div class="grid"></div>
+<div class="wrap">
+  <div class="head"><span class="dot"></span><h1>运行时架构</h1><span class="sub">Local-first · streaming · exact jump</span></div>
+  <div class="flow">
+    <div class="box"><div class="k">01 · Storage</div><div class="t">Session logs</div><div class="d">~/.dsh/sessions
+*.jsonl.zst</div></div>
+    <div class="arrow"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="box"><div class="k">02 · Read</div><div class="t">ctx.sessionQuery</div><div class="d">listSessions()
+readSession()
+live + persisted</div></div>
+    <div class="arrow"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="box accent"><div class="k">03 · Host</div><div class="t">Index & cache</div><div class="d">parse → docs[]
+revision incremental
+zstd · 0700 / 0600</div></div>
+    <div class="arrow"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="box"><div class="k">04 · Route</div><div class="t">POST /deep-search/api</div><div class="d">loopback + cookie
+NDJSON stream
+meta → groups → done</div></div>
+    <div class="arrow"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h13m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="box"><div class="k">05 · Client</div><div class="t">Search panel</div><div class="d">sidebar entry
+filters · preview
+exact turn / call jump</div></div>
+  </div>
+  <div class="notes">
+    <div class="note"><b>✓</b> 无外网请求</div>
+    <div class="note"><b>✓</b> 仅 loopback + 宿主 Cookie</div>
+    <div class="note"><b>✓</b> 30 命中 / 会话 · 48 组</div>
+    <div class="note"><b>✓</b> 3.2s 软截止</div>
+    <div class="note"><b>✓</b> 每 2000 事件让出事件循环</div>
+  </div>
+</div></body></html>

@@ -295,31 +295,4 @@ content_preview = preview(
 )
 page("shot-content", "超时", content_groups, content_preview, content_on=True, open_menu="content", menu=content_menu(), spacer='<div style="height:232px"></div>')
 
-# 5. empty / building state
-empty = """
-<div class="dsss-empty dsss-empty-hero">
-  <div class="dsss-hero-glyph">SEARCH_ICON</div>
-  <h3 class="dsss-empty-title">潜到会话最深处</h3>
-  <p class="dsss-empty-hint">关键词、正则、文件名、工具输出都在索引里；不用先打开会话，也不用记得它在哪一轮。</p>
-  <div class="dsss-picks"><span class="dsss-picks-label">试试这些</span>
-    <button type="button" class="dsss-pick">超时</button>
-    <button type="button" class="dsss-pick is-mono">invoice_\\d{4}\\.pdf</button>
-    <button type="button" class="dsss-pick">rollout</button>
-    <button type="button" class="dsss-pick is-mono">apply_patch</button>
-  </div>
-  <div class="dsss-building is-compact">
-    <div class="dsss-building-head"><span class="dsss-building-title">正在建立索引</span><span class="dsss-building-count">已索引 18 / 42</span></div>
-    <div class="dsss-progress"><span class="dsss-progress-bar" style="width:43%"></span></div>
-    <p class="dsss-building-hint">首次会读一遍历史日志，之后只增量更新；可以先输入，结果会随索引补全。</p>
-  </div>
-  <div class="dsss-stats">
-    <div class="dsss-stat"><span class="dsss-stat-value">42</span><span class="dsss-stat-label">会话</span></div>
-    <div class="dsss-stat"><span class="dsss-stat-value">86,420</span><span class="dsss-stat-label">段落</span></div>
-    <div class="dsss-stat"><span class="dsss-stat-value">64.8 MB</span><span class="dsss-stat-label">索引</span></div>
-    <div class="dsss-stat"><span class="dsss-stat-value">0</span><span class="dsss-stat-label">上传</span></div>
-  </div>
-</div>
-""".replace("SEARCH_ICON", search_icon(30))
-page("shot-states", "", empty, "", status="索引中 18/42", count="18 会话", seg="32,180 段落",
-     footer_html=footer(scanned="—", hits="—", ms="—", index="构建索引中"))
 print("rendered", [p.name for p in DOCS.glob("shot-*.png")])
