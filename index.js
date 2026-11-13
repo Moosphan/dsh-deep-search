@@ -31,7 +31,7 @@ const MAX_CANDIDATES_PER_SESSION = 400
 const MAX_GROUPS = 48
 const MAX_QUERY_CHARS = 400
 const SEARCH_DEADLINE_MS = 3_200
-/** Cache files. One JSON document per Session, zstd-compressed. */
+/** Cache files. One JSON document per Session, gzip-compressed. */
 const CACHE_VERSION = 1
 
 const KIND = {
@@ -221,23 +221,20 @@ function warn(message, error) {
 
 // #region Index ----------------------------------------------------------------
 
-/** Node 20 has no zstd API; use gzip for cache files there. Reads probe both codecs. */
-const HAS_ZSTD = typeof zlib.zstdCompressSync === 'function'
+/** Cache is gzip so every supported Node version writes the same format. Reads still probe zstd for older caches. */
+const HAS_ZSTD = typeof zlib.zstdDecompressSync === 'function'
 
 function packCache(text) {
-  const buffer = Buffer.from(text, 'utf8')
-  return HAS_ZSTD ? zlib.zstdCompressSync(buffer) : zlib.gzipSync(buffer)
+  return zlib.gzipSync(Buffer.from(text, 'utf8'))
 }
 
 function unpackCache(buffer) {
-  if (HAS_ZSTD) {
-    try {
-      return zlib.zstdDecompressSync(buffer)
-    } catch {
-      /* Cache written by an older Node without zstd. */
-    }
+  try {
+    return zlib.gunzipSync(buffer)
+  } catch (error) {
+    if (HAS_ZSTD) return zlib.zstdDecompressSync(buffer)
+    throw error
   }
-  return zlib.gunzipSync(buffer)
 }
 
 function createIndex(ctx) {

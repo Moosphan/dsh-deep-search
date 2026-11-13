@@ -55,7 +55,7 @@
   <g text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="15" fill="#7F8CA3">
     <text x="140" y="502">*.jsonl.zst</text>
     <text x="330" y="502">list · read</text>
-    <text x="600" y="502">docs[] · zstd</text>
+    <text x="600" y="502">docs[] · gzip</text>
     <text x="880" y="502">/deep-search/api</text>
     <text x="1084" y="502">filter · jump</text>
     <text x="600" y="372">revision</text>
