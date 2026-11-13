@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/banner.png" alt="Deep Search · 深海搜索" width="100%" />
+  <img src="docs/hero.png" alt="Deep Search · 深海搜索" width="100%" />
 </p>
 
 <h1 align="center">Deep Search · 深海搜索</h1>
@@ -127,7 +127,7 @@ index.js            Host：索引、解析、筛选、/deep-search/api、NDJSON 
 client.js           Client：侧栏入口、面板、筛选、预览、跳转
 locale/*.json       插件市场元数据
 cordis.patch.yml    bundle 插入行
-docs/               banner、架构图、面板图与 mock 源文件
+docs/               hero、架构图、面板图与 mock 源文件
 test/               Host 与 Client 无头测试
 ```
 
