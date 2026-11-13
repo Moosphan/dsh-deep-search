@@ -19,6 +19,7 @@
     "README.md",
     "CHANGELOG.md",
     "docs/*.png",
+    "docs/*.svg",
     "LICENSE"
   ],
   "scripts": {

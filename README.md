@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/hero.png" alt="Deep Search · 深海搜索" width="100%" />
+  <img src="docs/hero.svg" alt="Deep Search · 深海搜索" width="100%" />
 </p>
 
 <h1 align="center">Deep Search · 深海搜索</h1>
@@ -93,7 +93,7 @@ Host 半边仅在 DSH 进程启动时加载；安装后需完全退出并重新�
 
 ## 性能与架构
 
-<p align="center"><img src="docs/architecture.png" alt="Deep Search 运行时架构" width="100%"/></p>
+<p align="center"><img src="docs/architecture.svg" alt="Deep Search 运行时架构" width="100%"/></p>
 
 - **索引**：每会话一份 zstd 缓存；修订号未变化时直接复用，live 会话按事件数增量重读。
 - **构建**：单个大会话每 2000 个事件让出事件循环，Host HTTP 服务保持可响应；首次冷启动按会话串行读取并展示进度。
