@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="background:transparent" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">dsh-deep-search · Runtime Architecture</title>
+  <desc id="desc">Local-first retrieval path: session logs, sessionQuery, index and cache, NDJSON route, client panel.</desc>
+
+  <rect width="1200" height="630" rx="28" fill="#11151D"/>
+  <rect x="0.5" y="0.5" width="1199" height="629" rx="27.5" fill="none" stroke="#242C3A"/>
+
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif">
+    <text x="64" y="62" fill="#7F8CA3" font-size="15" font-weight="700" letter-spacing="2.6">RUNTIME · LOCAL-FIRST</text>
+    <rect x="64" y="80" width="52" height="5" rx="2.5" fill="#4D6BFE"/>
+    <text x="61" y="154" fill="#F3F6FB" font-size="64" font-weight="760" letter-spacing="-1.6">Runtime Architecture</text>
+    <text x="64" y="202" fill="#A7B2C2" font-size="27" font-weight="500">Index · Query · Locate</text>
+    <text x="64" y="238" fill="#7F8CA3" font-size="21">Local session index, streaming retrieval, exact jump.</text>
+  </g>
+
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="14" fill="#6F7D92" letter-spacing="1">
+    <text x="1136" y="62" text-anchor="end">NDJSON · 3.2s</text>
+  </g>
+
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M64 430 H1136" stroke="#D7DEE9" stroke-width="3"/>
+    <path d="M430 430 C490 430 480 300 540 300 H760 C820 300 820 430 880 430" stroke="#4D6BFE" stroke-width="3"/>
+    <path d="M330 430 C390 430 380 545 440 545 H760 C815 545 820 430 880 430" stroke="#D9822B" stroke-width="3"/>
+  </g>
+
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="15" fill="#7F8CA3">
+    <text x="64" y="414">session</text>
+    <text x="660" y="282" text-anchor="middle" fill="#849BFF">stream</text>
+    <text x="640" y="529" text-anchor="middle" fill="#E0A458">security</text>
+  </g>
+
+  <g stroke-width="3.5">
+    <circle cx="140" cy="430" r="12" fill="#11151D" stroke="#D7DEE9"/>
+    <circle cx="330" cy="430" r="12" fill="#11151D" stroke="#D7DEE9"/>
+    <circle cx="600" cy="430" r="12" fill="#11151D" stroke="#D7DEE9"/>
+    <rect x="866" y="416" width="28" height="28" rx="4" transform="rotate(45 880 430)" fill="#11151D" stroke="#D7DEE9"/>
+    <circle cx="1084" cy="430" r="12" fill="#11151D" stroke="#D7DEE9"/>
+    <circle cx="600" cy="300" r="12" fill="#11151D" stroke="#4D6BFE"/>
+    <circle cx="720" cy="300" r="12" fill="#11151D" stroke="#4D6BFE"/>
+    <circle cx="520" cy="545" r="12" fill="#11151D" stroke="#D9822B"/>
+    <circle cx="700" cy="545" r="12" fill="#11151D" stroke="#D9822B"/>
+  </g>
+
+  <g text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" font-size="21" font-weight="650" fill="#F3F6FB">
+    <text x="140" y="474">Session logs</text>
+    <text x="330" y="474">sessionQuery</text>
+    <text x="600" y="474">Index &amp; cache</text>
+    <text x="880" y="474">API</text>
+    <text x="1084" y="474">Panel</text>
+    <text x="600" y="344">Revision</text>
+    <text x="720" y="344">NDJSON</text>
+    <text x="520" y="589">Local cache</text>
+    <text x="700" y="589">Access control</text>
+  </g>
+  <g text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="15" fill="#7F8CA3">
+    <text x="140" y="502">*.jsonl.zst</text>
+    <text x="330" y="502">list · read</text>
+    <text x="600" y="502">docs[] · zstd</text>
+    <text x="880" y="502">/deep-search/api</text>
+    <text x="1084" y="502">filter · jump</text>
+    <text x="600" y="372">revision</text>
+    <text x="720" y="372">meta → groups</text>
+    <text x="520" y="617">0700 / 0600</text>
+    <text x="700" y="617">loopback + cookie</text>
+  </g>
+
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="12" fill="#5E6B80" letter-spacing=".8">
+    <text x="64" y="604">no external network · no telemetry</text>
+    <text x="1136" y="604" text-anchor="end">INDEX → STREAM → LOCATE</text>
+  </g>
+</svg>

@@ -1,8 +1,10 @@
+<p align="center"><a href="README.en.md">English</a> · <strong>中文</strong></p>
+
 <p align="center">
-  <img src="docs/hero.svg" alt="Deep Search · 深海搜索" width="100%" />
+  <img src="docs/hero.svg" alt="dsh-deep-search · 深海搜索" width="100%" />
 </p>
 
-<h1 align="center">Deep Search · 深海搜索</h1>
+<h1 align="center">dsh-deep-search · 深海搜索</h1>
 
 <p align="center">DeepSeek Harness 的全局会话检索插件：本地索引全部逻辑会话，支持关键词/正则、组合筛选、流式结果与精确跳转。</p>
 
@@ -20,7 +22,7 @@
 
 ## 背景
 
-DSH 的会话历史持续增长，原生搜索主要覆盖标题与当前会话。Deep Search 为全部逻辑会话建立本地检索索引，支持多条件筛选、流式返回，并将命中定位回原始轮次或工具调用。
+DSH 的会话历史持续增长，原生搜索主要覆盖标题与当前会话。<code>dsh-deep-search</code> 为全部逻辑会话建立本地检索索引，支持多条件筛选、流式返回，并将命中定位回原始轮次或工具调用。
 
 ## 功能
 
@@ -52,7 +54,7 @@ DSH 的会话历史持续增长，原生搜索主要覆盖标题与当前会话�
 
 ## 安装
 
-**插件市场**：DSH → 插件 → 市场 → 搜索 `Deep Search` / `深海搜索` / `dsh-deep-search` → 安装 → 重启 DSH。
+**插件市场**：DSH → 插件 → 市场 → 搜索 `dsh-deep-search` / `深海搜索` → 安装 → 重启 DSH。
 
 **CLI**：
 
@@ -93,7 +95,7 @@ Host 半边仅在 DSH 进程启动时加载；安装后需完全退出并重新�
 
 ## 性能与架构
 
-<p align="center"><img src="docs/architecture.svg" alt="Deep Search 运行时架构" width="100%"/></p>
+<p align="center"><img src="docs/architecture.svg" alt="dsh-deep-search 运行时架构" width="100%"/></p>
 
 - **索引**：每会话一份 zstd 缓存；修订号未变化时直接复用，live 会话按事件数增量重读。
 - **构建**：单个大会话每 2000 个事件让出事件循环，Host HTTP 服务保持可响应；首次冷启动按会话串行读取并展示进度。

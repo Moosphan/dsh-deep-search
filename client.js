@@ -139,8 +139,8 @@ window.__ModuleLoader__.load({
     }
 
     const en = {
-      panel: 'Deep Search',
-      title: 'Deep Search',
+      panel: 'dsh-deep-search',
+      title: 'dsh-deep-search',
       subtitle: 'Index every session. Resolve every hit.',
       placeholder: 'Type a keyword, or switch to regex…',
       keyword: 'Keyword',

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" style="background:transparent" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-  <title id="title">Deep Search · 深海搜索</title>
+  <title id="title">dsh-deep-search · 深海搜索</title>
   <desc id="desc">DeepSeek Harness 全局会话检索：全量索引每一段会话，精确命中每一处上下文。</desc>
 
   <rect width="1200" height="630" rx="28" fill="#11151D"/>
@@ -8,7 +8,7 @@
   <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif">
     <text x="64" y="62" fill="#7F8CA3" font-size="15" font-weight="700" letter-spacing="2.6">DEEPSEEK HARNESS · PLUGIN</text>
     <rect x="64" y="80" width="52" height="5" rx="2.5" fill="#4D6BFE"/>
-    <text x="61" y="154" fill="#F3F6FB" font-size="68" font-weight="760" letter-spacing="-1.8">Deep Search</text>
+    <text x="61" y="154" fill="#F3F6FB" font-size="68" font-weight="760" letter-spacing="-1.8">dsh-deep-search</text>
     <text x="64" y="202" fill="#A7B2C2" font-size="27" font-weight="500">深海搜索 · 全局会话检索</text>
     <text x="64" y="238" fill="#7F8CA3" font-size="21">全量索引每一段会话，精确命中每一处上下文。</text>
   </g>

@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="background:transparent" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">dsh-deep-search · Global Session Search</title>
+  <desc id="desc">dsh-deep-search: global session search for DeepSeek Harness. Index every session, resolve every hit.</desc>
+
+  <rect width="1200" height="630" rx="28" fill="#11151D"/>
+  <rect x="0.5" y="0.5" width="1199" height="629" rx="27.5" fill="none" stroke="#242C3A"/>
+
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif">
+    <text x="64" y="62" fill="#7F8CA3" font-size="15" font-weight="700" letter-spacing="2.6">DEEPSEEK HARNESS · PLUGIN</text>
+    <rect x="64" y="80" width="52" height="5" rx="2.5" fill="#4D6BFE"/>
+    <text x="61" y="154" fill="#F3F6FB" font-size="68" font-weight="760" letter-spacing="-1.8">dsh-deep-search</text>
+    <text x="64" y="202" fill="#A7B2C2" font-size="27" font-weight="500">Global session search for DeepSeek Harness</text>
+    <text x="64" y="238" fill="#7F8CA3" font-size="21">Index every session. Resolve every hit.</text>
+  </g>
+
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="14" fill="#6F7D92" letter-spacing="1">
+    <text x="1136" y="62" text-anchor="end">v1.0.0 · MIT</text>
+  </g>
+
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- main track -->
+    <path d="M64 430 H1136" stroke="#D7DEE9" stroke-width="3"/>
+    <!-- query modifiers branch -->
+    <path d="M430 430 C490 430 480 300 540 300 H760 C820 300 820 430 880 430" stroke="#4D6BFE" stroke-width="3"/>
+    <!-- content branch -->
+    <path d="M330 430 C390 430 380 545 440 545 H760 C815 545 820 430 880 430" stroke="#D9822B" stroke-width="3"/>
+  </g>
+
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="15" fill="#7F8CA3">
+    <text x="64" y="414">main</text>
+    <text x="660" y="282" text-anchor="middle" fill="#849BFF">query</text>
+    <text x="640" y="529" text-anchor="middle" fill="#E0A458">content</text>
+  </g>
+
+  <g fill="#4D6BFE">
+    <circle cx="660" cy="300" r="4.5"/>
+    <circle cx="700" cy="300" r="4.5"/>
+  </g>
+
+  <g stroke-width="3.5">
+    <circle cx="140" cy="430" r="12" fill="#11151D" stroke="#D7DEE9"/>
+    <circle cx="330" cy="430" r="12" fill="#11151D" stroke="#D7DEE9"/>
+    <circle cx="600" cy="430" r="12" fill="#11151D" stroke="#D7DEE9"/>
+    <rect x="866" y="416" width="28" height="28" rx="4" transform="rotate(45 880 430)" fill="#11151D" stroke="#D7DEE9"/>
+    <circle cx="1084" cy="430" r="12" fill="#11151D" stroke="#D7DEE9"/>
+    <circle cx="600" cy="300" r="12" fill="#11151D" stroke="#4D6BFE"/>
+    <circle cx="720" cy="300" r="12" fill="#11151D" stroke="#4D6BFE"/>
+    <circle cx="520" cy="545" r="12" fill="#11151D" stroke="#D9822B"/>
+    <circle cx="700" cy="545" r="12" fill="#11151D" stroke="#D9822B"/>
+  </g>
+
+  <g text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif" font-size="21" font-weight="650" fill="#F3F6FB">
+    <text x="140" y="474">Sessions</text>
+    <text x="330" y="474">Index</text>
+    <text x="600" y="474">Query</text>
+    <text x="880" y="474">Hits</text>
+    <text x="1084" y="474">Locate</text>
+    <text x="600" y="344">Regex</text>
+    <text x="720" y="344">Filters</text>
+    <text x="520" y="589">Files</text>
+    <text x="700" y="589">Tools / reasoning</text>
+  </g>
+  <g text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="15" fill="#7F8CA3">
+    <text x="140" y="502">sessions</text>
+    <text x="330" y="502">index</text>
+    <text x="600" y="502">query</text>
+    <text x="880" y="502">hits</text>
+    <text x="1084" y="502">locate</text>
+    <text x="600" y="372">regex</text>
+    <text x="720" y="372">filters</text>
+    <text x="520" y="617">files</text>
+    <text x="700" y="617">tools · reasoning</text>
+  </g>
+
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="12" fill="#5E6B80" letter-spacing=".8">
+    <text x="64" y="604">github.com/Moosphan/dsh-deep-search</text>
+    <text x="1136" y="604" text-anchor="end">INDEX → QUERY → LOCATE</text>
+  </g>
+</svg>

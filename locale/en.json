@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Deep Search",
-    "description": "Deep Search: index every session and resolve every hit. Keywords or regex, time, workspace, speaker, execution, file-type filters, streaming results, exact jump."
+    "title": "dsh-deep-search",
+    "description": "dsh-deep-search: index every session and resolve every hit. Keywords or regex, time, workspace, speaker, execution, file-type filters, streaming results, exact jump."
   }
 }
