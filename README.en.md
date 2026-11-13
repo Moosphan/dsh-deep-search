@@ -9,7 +9,7 @@
 <p align="center">Global session search for DeepSeek Harness: a local index over every logical session, with keyword/regex search, composable filters, streaming results, and exact jumps.</p>
 
 <p align="center">
-  <a href="https://github.com/Moosphan/dsh-deep-search/releases"><img alt="GitHub release" src="https://img.shields.io/github/v/release/Moosphan/dsh-deep-search?style=flat-square&color=4176e6"></a>
+  <a href="https://github.com/Moosphan/dsh-deep-search/releases"><img alt="GitHub release" src="https://img.shields.io/github/v/release/Moosphan/dsh-deep-search?style=flat-square&color=4176e6&label=release"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-4176e6?style=flat-square"></a>
   <a href="https://github.com/Moosphan/dsh-deep-search/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Moosphan/dsh-deep-search/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="DeepSeek Harness" src="https://img.shields.io/badge/DeepSeek%20Harness-plugin-0B0E14?style=flat-square">

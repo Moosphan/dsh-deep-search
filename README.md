@@ -9,7 +9,7 @@
 <p align="center">DeepSeek Harness 的全局会话检索插件：本地索引全部逻辑会话，支持关键词/正则、组合筛选、流式结果与精确跳转。</p>
 
 <p align="center">
-  <a href="https://github.com/Moosphan/dsh-deep-search/releases"><img alt="GitHub release" src="https://img.shields.io/github/v/release/Moosphan/dsh-deep-search?style=flat-square&color=4176e6"></a>
+  <a href="https://github.com/Moosphan/dsh-deep-search/releases"><img alt="GitHub release" src="https://img.shields.io/github/v/release/Moosphan/dsh-deep-search?style=flat-square&color=4176e6&label=release"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-4176e6?style=flat-square"></a>
   <a href="https://github.com/Moosphan/dsh-deep-search/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Moosphan/dsh-deep-search/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="DeepSeek Harness" src="https://img.shields.io/badge/DeepSeek%20Harness-plugin-0B0E14?style=flat-square">
