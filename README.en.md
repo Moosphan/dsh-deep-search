@@ -99,7 +99,7 @@ Keyboard: `↑` / `↓` selects a hit, double-click or `→` opens it, `Esc` cle
 
 <p align="center"><img src="docs/architecture.en.svg" alt="dsh-deep-search runtime architecture" width="100%"/></p>
 
-- **Index**: one gzip cache per session; live sessions are parsed incrementally from an event cursor, appending only new events. Warm cache serves results immediately while refresh runs in the background.
+- **Index**: one gzip base cache per session; live sessions are parsed incrementally from an event cursor and append new documents as delta chunks, compacted after 8 deltas. Warm cache serves results immediately while refresh runs in the background.
 - **Cold start**: recent sessions are indexed first, so the panel can return partial results while older sessions fill in.
 - **Build**: large sessions yield to the event loop every 2,000 events so the Host HTTP server stays responsive; first cold start reads sessions serially and reports progress.
 - **Cache**: `~/.dsh/plugin-data/deep-search/index/`, directories `0700` and files `0600`; searchable text only.

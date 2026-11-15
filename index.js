@@ -21,6 +21,7 @@ const ROUTE = '/deep-search/api'
 const INDEX_VERSION = 6
 const CALLER = 'deep-search'
 const MAX_BODY_BYTES = 96 * 1024
+const REFRESH_TTL_MS = Number(process.env.DSH_SEARCH_TTL_MS ?? 60_000)
 /** Hard caps that keep one pathological log or one broad query finite. */
 const MAX_DOC_CHARS = 8_000
 const MAX_TOOL_CHARS = 5_000
@@ -289,6 +290,12 @@ function createIndex(ctx) {
     if (manifest === null || manifest.version !== INDEX_VERSION || manifest.cacheVersion !== CACHE_VERSION) return
     const sessions = Array.isArray(manifest.sessions) ? manifest.sessions : []
     state.cacheBytes = Number(manifest.bytes) || 0
+    let cacheFiles = []
+    try {
+      cacheFiles = await fs.readdir(cacheDir)
+    } catch {
+      /* Cache directory may not exist yet. */
+    }
     const queue = sessions.slice(0, 400)
     let cursor = 0
     const worker = async () => {
@@ -297,9 +304,34 @@ function createIndex(ctx) {
         cursor += 1
         if (meta === null || typeof meta !== 'object' || typeof meta.id !== 'string') continue
         try {
-          const raw = unpackCache(await fs.readFile(path.join(cacheDir, cacheName(meta.id))))
+          const base = cacheName(meta.id)
+          const raw = unpackCache(await fs.readFile(path.join(cacheDir, base)))
           const entry = decodeCache(raw)
-          if (entry !== null && Array.isArray(entry.docs)) entries.set(meta.id, entry)
+          if (entry === null || !Array.isArray(entry.docs)) return
+          const prefix = `${base}.`
+          const deltas = cacheFiles
+            .filter((name) => name.startsWith(prefix) && name.endsWith('.delta.zst'))
+            .map((name) => ({ name, seq: Number(name.slice(prefix.length).split('.')[0]) || 0 }))
+            .sort((a, b) => a.seq - b.seq)
+          for (const { name } of deltas) {
+            try {
+              const delta = decodeCache(unpackCache(await fs.readFile(path.join(cacheDir, name))))
+              if (delta === null || delta.prevSeq !== entry.lastSeq || !Array.isArray(delta.docs)) continue
+              entry.docs.push(...delta.docs)
+              entry.chars += Number(delta.charsDelta) || 0
+              entry.lastSeq = delta.lastSeq
+              entry.rev = delta.rev ?? entry.rev
+              entry.title = delta.title ?? entry.title
+              entry.turn = delta.turn ?? entry.turn
+              entry.step = delta.step ?? entry.step
+              entry.updatedAt = delta.updatedAt ?? entry.updatedAt
+              entry.toolNames = delta.toolNames ?? entry.toolNames
+              entry.deltaCount = (entry.deltaCount ?? 0) + 1
+            } catch {
+              /* Ignore a torn delta; a full write will replace the base. */
+            }
+          }
+          entries.set(meta.id, entry)
         } catch {
           /* A missing or stale cache file is rebuilt from the log. */
         }
@@ -400,7 +432,7 @@ function createIndex(ctx) {
         entries.set(id, entry)
         changed = true
         facetsDirty = true
-        await writeSession(entry)
+        await writeSession(entry, current)
       } catch (error) {
         /* One unreadable log must not remove a previously good entry. */
         state.failed += 1
@@ -425,7 +457,7 @@ function createIndex(ctx) {
       /* A warm cache is served immediately; the refresh runs in the background.
          Only a genuinely cold index waits for the full build. */
       if (!force && entries.size > 0) {
-        if (refreshPromise === null && Date.now() - state.builtAt >= 60_000) {
+        if (refreshPromise === null && Date.now() - state.builtAt >= REFRESH_TTL_MS) {
           state.total = Math.max(state.total, entries.size)
           state.done = Math.max(state.done, entries.size)
           state.building = true
@@ -458,17 +490,79 @@ function createIndex(ctx) {
     })()
   }
 
-  async function writeSession(entry) {
+  async function writeSession(entry, previous = null) {
     try {
       await fs.mkdir(cacheDir, { recursive: true, mode: 0o700 })
+      const base = cacheName(entry.id)
+      const canDelta =
+        previous !== null &&
+        Number.isInteger(previous.lastSeq) &&
+        Number.isInteger(entry.lastSeq) &&
+        entry.lastSeq > previous.lastSeq &&
+        Array.isArray(previous.docs) &&
+        Array.isArray(entry.docs) &&
+        entry.docs.length > previous.docs.length &&
+        (previous.deltaCount ?? 0) < 8
+      if (canDelta) {
+        const delta = {
+          id: entry.id,
+          rev: entry.rev,
+          title: entry.title,
+          turn: entry.turn ?? 0,
+          step: entry.step ?? 0,
+          updatedAt: entry.updatedAt,
+          lastSeq: entry.lastSeq,
+          prevSeq: previous.lastSeq,
+          charsDelta: entry.chars - previous.chars,
+          docs: entry.docs.slice(previous.docs.length),
+          toolNames: entry.toolNames ?? {},
+        }
+        const packed = await packCache(JSON.stringify(delta))
+        const target = path.join(cacheDir, `${base}.${entry.lastSeq}.delta.zst`)
+        const temporary = `${target}.${process.pid}.tmp`
+        await fs.writeFile(temporary, packed, { mode: 0o600 })
+        await fs.rename(temporary, target)
+        entry.deltaCount = (previous.deltaCount ?? 0) + 1
+        state.cacheBytes += packed.length
+        return
+      }
       const packed = await packCache(JSON.stringify(entry))
-      const target = path.join(cacheDir, cacheName(entry.id))
+      const target = path.join(cacheDir, base)
       const temporary = `${target}.${process.pid}.tmp`
       await fs.writeFile(temporary, packed, { mode: 0o600 })
       await fs.rename(temporary, target)
+      entry.deltaCount = 0
       state.cacheBytes += packed.length
+      if (previous !== null) await clearDeltas(base)
     } catch {
       /* Cache is an accelerator; a read-only home must not break search. */
+    }
+  }
+
+  async function clearDeltas(base) {
+    try {
+      const prefix = `${base}.`
+      const names = await fs.readdir(cacheDir)
+      await Promise.all(
+        names
+          .filter((name) => name.startsWith(prefix) && name.endsWith('.delta.zst'))
+          .map((name) => fs.rm(path.join(cacheDir, name), { force: true })),
+      )
+    } catch {
+      /* Best effort. */
+    }
+  }
+
+  async function clearAllDeltas() {
+    try {
+      const names = await fs.readdir(cacheDir)
+      await Promise.all(
+        names
+          .filter((name) => name.endsWith('.delta.zst'))
+          .map((name) => fs.rm(path.join(cacheDir, name), { force: true })),
+      )
+    } catch {
+      /* Best effort. */
     }
   }
 
@@ -703,7 +797,7 @@ function createIndex(ctx) {
       streamCache.clear()
       state.loaded = true
       facetsDirty = true
-      void ensure(true)
+      void clearAllDeltas().then(() => ensure(true))
     },
   }
 }
