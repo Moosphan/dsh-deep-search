@@ -14,6 +14,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import os from 'node:os'
 import zlib from 'node:zlib'
+import v8 from 'node:v8'
 import { promisify } from 'node:util'
 
 const ROUTE = '/deep-search/api'
@@ -226,8 +227,17 @@ function warn(message, error) {
 const HAS_ZSTD = typeof zlib.zstdDecompressSync === 'function'
 const gzipAsync = promisify(zlib.gzip)
 
-async function packCache(text) {
-  return gzipAsync(Buffer.from(text, 'utf8'))
+async function packCache(buffer) {
+  return gzipAsync(buffer)
+}
+
+function decodeCache(buffer) {
+  try {
+    return v8.deserialize(buffer)
+  } catch {
+    /* Cache written before the v8 format. */
+    return JSON.parse(buffer.toString('utf8'))
+  }
 }
 
 function unpackCache(buffer) {
@@ -262,6 +272,7 @@ function createIndex(ctx) {
   let refreshPromise = null
   let manifestWrite = Promise.resolve()
   let cachePromise = null
+  let migrating = false
 
   const dataDir = resolveDataDir()
   const cacheDir = path.join(dataDir, 'index')
@@ -288,7 +299,7 @@ function createIndex(ctx) {
         if (meta === null || typeof meta !== 'object' || typeof meta.id !== 'string') continue
         try {
           const raw = unpackCache(await fs.readFile(path.join(cacheDir, cacheName(meta.id))))
-          const entry = JSON.parse(raw.toString('utf8'))
+          const entry = decodeCache(raw)
           if (entry !== null && Array.isArray(entry.docs)) entries.set(meta.id, entry)
         } catch {
           /* A missing or stale cache file is rebuilt from the log. */
@@ -297,6 +308,7 @@ function createIndex(ctx) {
     }
     await Promise.all(Array.from({ length: 6 }, worker))
     if (entries.size > 0) {
+      if (manifest.cacheFormat !== 'v8') void migrateCache()
       state.builtAt = Number(manifest.savedAt) || Date.now()
       state.buildMs = Number(manifest.buildMs) || 0
       /* A missing cache file means the reuse guarantee is incomplete: let the
@@ -449,8 +461,7 @@ function createIndex(ctx) {
   async function writeSession(entry) {
     try {
       await fs.mkdir(cacheDir, { recursive: true, mode: 0o700 })
-      const body = JSON.stringify(entry)
-      const packed = await packCache(body)
+      const packed = await packCache(v8.serialize(entry))
       const target = path.join(cacheDir, cacheName(entry.id))
       const temporary = `${target}.${process.pid}.tmp`
       await fs.writeFile(temporary, packed, { mode: 0o600 })
@@ -461,10 +472,22 @@ function createIndex(ctx) {
     }
   }
 
+  async function migrateCache() {
+    if (migrating || entries.size === 0) return
+    migrating = true
+    try {
+      for (const entry of entries.values()) await writeSession(entry)
+      await writeManifest()
+    } finally {
+      migrating = false
+    }
+  }
+
   function writeManifest() {
     const snapshot = {
       version: INDEX_VERSION,
       cacheVersion: CACHE_VERSION,
+      cacheFormat: 'v8',
       savedAt: state.builtAt || Date.now(),
       buildMs: state.buildMs,
       bytes: state.cacheBytes,
