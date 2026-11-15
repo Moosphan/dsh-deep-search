@@ -190,7 +190,7 @@ def footer(scanned="13,204 段落", hits="37 处命中", ms="28 ms", index="64.8
     return f"""
 <footer class="dsss-foot">
   <span>↑↓ 选择 · 双击 / → 打开 · Esc 返回</span>
-  <span class="dsss-foot-stats">{scanned}<span class="dsss-meta-sep">·</span>{hits}<span class="dsss-meta-sep">·</span>{ms}<span class="dsss-meta-sep">·</span>{index}<span class="dsss-build">v1.0.1</span></span>
+  <span class="dsss-foot-stats">{scanned}<span class="dsss-meta-sep">·</span>{hits}<span class="dsss-meta-sep">·</span>{ms}<span class="dsss-meta-sep">·</span>{index}<span class="dsss-build">v1.1.0</span></span>
 </footer>"""
 
 def page(name, query, groups_html, preview_html, regex=False, file_on=False, content_on=False, open_menu=None, menu=None, status="就绪", count="42 会话", seg="86,420 段落", footer_html=None, panel_extra="", spacer="", mock_css="", menu_overlay=""):

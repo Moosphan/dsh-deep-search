@@ -7,7 +7,7 @@ import { test } from 'node:test'
 const temp = await mkdtemp(path.join(os.tmpdir(), 'dsh-session-search-'))
 process.env.DSH_PROFILE_DIR = temp
 
-const { apply } = await import('../index.js')
+const { apply, parseSession } = await import('../index.js')
 
 const now = Date.now()
 
@@ -326,6 +326,38 @@ test('cache survives a fresh index instance', async () => {
   })
   assert.equal(warm.ok, true)
   assert.ok(warm.value.groups.length >= 1)
+})
+
+test('incremental parse matches a full parse', async () => {
+  const extra = [
+    event('tool/call', 7, now, {
+      turn: 2,
+      step: 1,
+      callId: 'call_2',
+      name: 'bash',
+      arguments: JSON.stringify({ command: 'grep -R timeout .' }),
+    }),
+    event('tool/result', 8, now + 10, {
+      turn: 2,
+      step: 1,
+      toolCallId: 'call_2',
+      message: { role: 'tool', content: [{ type: 'text', text: 'timeout found in deploy.log' }] },
+    }),
+    event('assistant/message', 9, now + 20, {
+      turn: 2,
+      step: 1,
+      message: { role: 'assistant', content: [{ type: 'text', text: 'Incremental tail answer.' }] },
+    }),
+  ]
+  const full = await parseSession('I', { cwd: '/work/i', createdAt: now - 1000 }, [...eventsA, ...extra], 'r1', true)
+  const base = await parseSession('I', { cwd: '/work/i', createdAt: now - 1000 }, eventsA, 'r0', true)
+  const incremental = await parseSession('I', { cwd: '/work/i', createdAt: now - 1000 }, [...eventsA, ...extra], 'r1', true, base)
+  assert.deepEqual(
+    incremental.docs.map((doc) => [doc.k, doc.r, doc.text]),
+    full.docs.map((doc) => [doc.k, doc.r, doc.text]),
+  )
+  assert.equal(incremental.lastSeq, full.lastSeq)
+  assert.equal(incremental.updatedAt, full.updatedAt)
 })
 
 test.after(async () => {

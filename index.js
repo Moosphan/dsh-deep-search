@@ -14,6 +14,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import os from 'node:os'
 import zlib from 'node:zlib'
+import { promisify } from 'node:util'
 
 const ROUTE = '/deep-search/api'
 const INDEX_VERSION = 6
@@ -223,9 +224,10 @@ function warn(message, error) {
 
 /** Cache is gzip so every supported Node version writes the same format. Reads still probe zstd for older caches. */
 const HAS_ZSTD = typeof zlib.zstdDecompressSync === 'function'
+const gzipAsync = promisify(zlib.gzip)
 
-function packCache(text) {
-  return zlib.gzipSync(Buffer.from(text, 'utf8'))
+async function packCache(text) {
+  return gzipAsync(Buffer.from(text, 'utf8'))
 }
 
 function unpackCache(buffer) {
@@ -328,10 +330,17 @@ function createIndex(ctx) {
     }
 
     /* Newest activity first: a live Session, then recently written logs. */
+    const freshness = (record) => {
+      const header = record.header ?? {}
+      const snapshot = persisted.get(header.id)
+      return Number(header.updatedAt ?? snapshot?.updatedAt ?? snapshot?.header?.updatedAt ?? 0)
+    }
     records.sort((a, b) => {
       const liveA = live.has(a.header.id) ? 1 : 0
       const liveB = live.has(b.header.id) ? 1 : 0
       if (liveA !== liveB) return liveB - liveA
+      const freshnessDelta = freshness(b) - freshness(a)
+      if (freshnessDelta !== 0) return freshnessDelta
       const sa = persisted.get(a.header.id)
       const sb = persisted.get(b.header.id)
       return Number(sb?.sizeBytes ?? 0) - Number(sa?.sizeBytes ?? 0)
@@ -374,7 +383,7 @@ function createIndex(ctx) {
       }
       try {
         const log = await query.readSession(id)
-        const entry = await parseSession(id, log.session ?? record.header, log.events, rev, liveSession !== undefined)
+        const entry = await parseSession(id, log.session ?? record.header, log.events, rev, liveSession !== undefined, current)
         entries.set(id, entry)
         changed = true
         facetsDirty = true
@@ -439,7 +448,7 @@ function createIndex(ctx) {
     try {
       await fs.mkdir(cacheDir, { recursive: true, mode: 0o700 })
       const body = JSON.stringify(entry)
-      const packed = packCache(body)
+      const packed = await packCache(body)
       const target = path.join(cacheDir, cacheName(entry.id))
       const temporary = `${target}.${process.pid}.tmp`
       await fs.writeFile(temporary, packed, { mode: 0o600 })
@@ -689,14 +698,39 @@ function resolveDataDir() {
  * @param rev - Cheap source revision used to skip unchanged Sessions later.
  * @param live - Whether this Session is currently live.
  */
-async function parseSession(id, header, events, rev, live) {
-  const docs = []
-  let title = ''
-  let turn = 0
-  let step = 0
-  let updatedAt = typeof header?.createdAt === 'number' ? header.createdAt : 0
-  let chars = 0
-  const toolNames = new Map()
+async function parseSession(id, header, events, rev, live, previous = null) {
+  let base =
+    previous !== null &&
+    typeof previous === 'object' &&
+    Number.isInteger(previous.lastSeq) &&
+    Array.isArray(previous.docs)
+      ? previous
+      : null
+  let start = 0
+  if (base !== null) {
+    start = events.findIndex((event) => typeof event?.seq === 'number' && event.seq > base.lastSeq)
+    if (start < 0) start = events.length
+    for (let index = start; index < events.length; index += 1) {
+      if (Number(events[index]?.seq) <= base.lastSeq) {
+        base = null
+        start = 0
+        break
+      }
+    }
+  }
+  const docs = base === null ? [] : base.docs.slice()
+  let title = base === null ? '' : base.title
+  let turn = base === null ? 0 : base.turn
+  let step = base === null ? 0 : base.step
+  let updatedAt =
+    base === null
+      ? typeof header?.createdAt === 'number'
+        ? header.createdAt
+        : 0
+      : base.updatedAt
+  let chars = base === null ? 0 : base.chars
+  const toolNames = new Map(base === null ? [] : Object.entries(base.toolNames ?? {}))
+  let lastSeq = base === null ? -1 : base.lastSeq
 
   const add = (doc) => {
     if (typeof doc.text !== 'string') doc.text = ''
@@ -728,7 +762,7 @@ async function parseSession(id, header, events, rev, live) {
     }
   }
 
-  for (let eventIndex = 0; eventIndex < events.length; eventIndex += 1) {
+  for (let eventIndex = start; eventIndex < events.length; eventIndex += 1) {
     /* Keep the Host's HTTP loop responsive while one large log is folded. */
     if (eventIndex > 0 && eventIndex % 2000 === 0) await new Promise((resolve) => setImmediate(resolve))
     const event = events[eventIndex]
@@ -736,6 +770,7 @@ async function parseSession(id, header, events, rev, live) {
     const time = typeof event.time === 'number' ? event.time : 0
     if (time > updatedAt) updatedAt = time
     const seq = typeof event.seq === 'number' ? event.seq : 0
+    if (seq > lastSeq) lastSeq = seq
     const data = event.data !== null && typeof event.data === 'object' ? event.data : {}
 
     switch (event.type) {
@@ -863,6 +898,10 @@ async function parseSession(id, header, events, rev, live) {
     live,
     chars,
     docs,
+    lastSeq,
+    turn,
+    step,
+    toolNames: Object.fromEntries(toolNames),
   }
 }
 
@@ -1353,3 +1392,5 @@ function buildFacets(entries) {
 
 // #endregion
 
+
+export { parseSession }
