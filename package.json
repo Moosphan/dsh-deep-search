@@ -1,6 +1,6 @@
 {
   "name": "dsh-deep-search",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "dsh-deep-search（深海搜索）：DeepSeek Harness 全局会话检索插件。遍历所有会话历史，按关键词/正则与时间、工作空间、提问/回答/执行、文件类型组合筛选，流式返回并精确跳回原轮次或工具调用。",
   "license": "MIT",

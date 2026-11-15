@@ -258,14 +258,15 @@ function createIndex(ctx) {
   let facetsDirty = true
   let refreshPromise = null
   let manifestWrite = Promise.resolve()
+  let cachePromise = null
 
   const dataDir = resolveDataDir()
   const cacheDir = path.join(dataDir, 'index')
   const manifestPath = path.join(cacheDir, 'manifest.json')
 
-  async function loadCache() {
-    if (state.loaded) return
-    state.loaded = true
+  function loadCache() {
+    if (cachePromise !== null) return cachePromise
+    cachePromise = (async () => {
     let manifest
     try {
       manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'))
@@ -300,6 +301,8 @@ function createIndex(ctx) {
       if (entries.size < Math.min(sessions.length, 400)) state.builtAt = 0
     }
     facetsDirty = true
+    })()
+    return cachePromise
   }
 
   async function update(force = false) {
@@ -394,20 +397,42 @@ function createIndex(ctx) {
   }
 
   function ensure(force) {
-    if (refreshPromise !== null) return refreshPromise
-    if (!force && !state.building && entries.size > 0 && Date.now() - state.builtAt < 20_000) return Promise.resolve(entries)
-    state.building = true
-    refreshPromise = update(force === true)
-      .catch((error) => {
-        state.error = messageOf(error)
-        warn('index update failed', error)
+    return (async () => {
+      await loadCache()
+      /* A warm cache is served immediately; the refresh runs in the background.
+         Only a genuinely cold index waits for the full build. */
+      if (!force && entries.size > 0) {
+        if (refreshPromise === null && Date.now() - state.builtAt >= 60_000) {
+          state.total = Math.max(state.total, entries.size)
+          state.done = Math.max(state.done, entries.size)
+          state.building = true
+          refreshPromise = update(false)
+            .catch((error) => {
+              state.error = messageOf(error)
+              warn('index update failed', error)
+              return entries
+            })
+            .finally(() => {
+              state.building = false
+              refreshPromise = null
+            })
+        }
         return entries
-      })
-      .finally(() => {
-        state.building = false
-        refreshPromise = null
-      })
-    return refreshPromise
+      }
+      if (refreshPromise !== null) return refreshPromise
+      state.building = true
+      refreshPromise = update(force === true)
+        .catch((error) => {
+          state.error = messageOf(error)
+          warn('index update failed', error)
+          return entries
+        })
+        .finally(() => {
+          state.building = false
+          refreshPromise = null
+        })
+      return refreshPromise
+    })()
   }
 
   async function writeSession(entry) {

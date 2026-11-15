@@ -99,7 +99,7 @@ Keyboard: `↑` / `↓` selects a hit, double-click or `→` opens it, `Esc` cle
 
 <p align="center"><img src="docs/architecture.en.svg" alt="dsh-deep-search runtime architecture" width="100%"/></p>
 
-- **Index**: one gzip cache per session; unchanged revisions are reused, live sessions are re-read incrementally by event count.
+- **Index**: one gzip cache per session; unchanged revisions are reused, live sessions are re-read incrementally by event count. Warm cache serves results immediately while refresh runs in the background.
 - **Build**: large sessions yield to the event loop every 2,000 events so the Host HTTP server stays responsive; first cold start reads sessions serially and reports progress.
 - **Cache**: `~/.dsh/plugin-data/deep-search/index/`, directories `0700` and files `0600`; searchable text only.
 - **Limits**: 8,000 characters per document, 5,000 per tool output; 30 hits per session and 48 groups globally; 3.2s soft deadline per search.
