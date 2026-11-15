@@ -13,7 +13,7 @@ window.__ModuleLoader__.load({
     const ROUTE = 'deep-search/api'
     const STORE = 'dsh-deep-search.v1'
     const HIGHLIGHT = 'dsh-deep-search-arrival'
-    const BUILD = 'v1.3.1'
+    const BUILD = 'v1.3.2'
     const DEFAULT_KINDS = ['m', 'f', 't', 'o', 'a', 's']
     const ALL_EXTS = []
 

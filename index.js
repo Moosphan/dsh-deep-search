@@ -1004,6 +1004,9 @@ function filesOfToolCall(args) {
 /** Path-like tokens embedded in prose or an unparsable argument string. */
 function pathsOf(text) {
   if (typeof text !== 'string' || text === '') return []
+  /* Every path accepted by cleanPath carries an extension, so a dotless string
+     cannot produce a file hit. This skips the regex for most prose. */
+  if (!text.includes('.')) return []
   const out = []
   const pattern = /(?:[A-Za-z]:)?(?:[^\s"'`<>()[\]{}，。；：、,;!?]+[\\/])*[^\s"'`<>()[\]{}，。；：、,;!?]+\.([A-Za-z0-9]{1,10})\b/g
   let match
