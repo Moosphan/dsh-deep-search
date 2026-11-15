@@ -258,6 +258,7 @@ function createIndex(ctx) {
   }
   let facetsCache = null
   let facetsDirty = true
+  const streamCache = new Map()
   let refreshPromise = null
   let manifestWrite = Promise.resolve()
   let cachePromise = null
@@ -398,6 +399,7 @@ function createIndex(ctx) {
       if (state.done % 3 === 0) await new Promise((resolve) => setImmediate(resolve))
     }
 
+    streamCache.clear()
     state.building = false
     state.builtAt = Date.now()
     state.buildMs = state.builtAt - state.startedAt
@@ -579,6 +581,20 @@ function createIndex(ctx) {
       void ensure(false)
     }
     const filters = normalizeFilters(payload.filters)
+    const cacheKey = JSON.stringify({
+      query: payload.query ?? '',
+      options: payload.options ?? {},
+      filters: payload.filters ?? {},
+    })
+    const cached = streamCache.get(cacheKey)
+    if (cached !== undefined && !state.building && Date.now() - cached.at < 15_000) {
+      await emit({ type: 'meta', value: cached.meta })
+      for (const group of cached.groups) {
+        if (!await emit({ type: 'groups', groups: [group] })) return
+      }
+      await emit({ type: 'done', value: cached.done })
+      return
+    }
     const started = Date.now()
     const base = {
       took: 0,
@@ -593,20 +609,20 @@ function createIndex(ctx) {
       const value = runSearch(entries, payload, state)
       const meta = { ...value }
       delete meta.groups
+      const done = {
+        took: value.took,
+        totalSessions: value.totalSessions,
+        totalHits: value.totalHits,
+        scanned: value.scanned,
+        truncated: value.truncated,
+      }
+      streamCache.set(cacheKey, { at: Date.now(), meta, groups: value.groups, done })
+      if (streamCache.size > 32) streamCache.delete(streamCache.keys().next().value)
       await emit({ type: 'meta', value: meta })
       for (let offset = 0; offset < value.groups.length; offset += 4) {
         if (!await emit({ type: 'groups', groups: value.groups.slice(offset, offset + 4) })) return
       }
-      await emit({
-        type: 'done',
-        value: {
-          took: value.took,
-          totalSessions: value.totalSessions,
-          totalHits: value.totalHits,
-          scanned: value.scanned,
-          truncated: value.truncated,
-        },
-      })
+      await emit({ type: 'done', value: done })
       return
     }
 
@@ -618,6 +634,7 @@ function createIndex(ctx) {
     let totalHits = 0
     let scanned = 0
     let truncated = false
+    const collected = []
     let pending = []
     for (const entry of ordered) {
       if (Date.now() - started > SEARCH_DEADLINE_MS) {
@@ -631,6 +648,7 @@ function createIndex(ctx) {
       scanned += one.scanned
       pending.push(one.groups[0])
       if (pending.length >= 2) {
+        collected.push(...pending)
         if (!await emit({ type: 'groups', groups: pending })) return
         pending = []
       }
@@ -639,17 +657,27 @@ function createIndex(ctx) {
         break
       }
     }
-    if (pending.length > 0) await emit({ type: 'groups', groups: pending })
-    await emit({
-      type: 'done',
-      value: {
-        took: Math.round((Date.now() - started) * 10) / 10,
-        totalSessions,
-        totalHits,
-        scanned,
-        truncated,
-      },
-    })
+    if (pending.length > 0) {
+      collected.push(...pending)
+      await emit({ type: 'groups', groups: pending })
+    }
+    const done = {
+      took: Math.round((Date.now() - started) * 10) / 10,
+      totalSessions,
+      totalHits,
+      scanned,
+      truncated,
+    }
+    if (!state.building) {
+      streamCache.set(cacheKey, {
+        at: Date.now(),
+        meta: { query: typeof payload.query === 'string' ? payload.query : '', ...base },
+        groups: collected,
+        done,
+      })
+      if (streamCache.size > 32) streamCache.delete(streamCache.keys().next().value)
+    }
+    await emit({ type: 'done', value: done })
   }
 
   return {
@@ -660,6 +688,7 @@ function createIndex(ctx) {
     detail,
     reindex() {
       entries.clear()
+      streamCache.clear()
       state.loaded = true
       facetsDirty = true
       void ensure(true)

@@ -13,7 +13,7 @@ window.__ModuleLoader__.load({
     const ROUTE = 'deep-search/api'
     const STORE = 'dsh-deep-search.v1'
     const HIGHLIGHT = 'dsh-deep-search-arrival'
-    const BUILD = 'v1.1.0'
+    const BUILD = 'v1.2.0'
     const DEFAULT_KINDS = ['m', 'f', 't', 'o', 'a', 's']
     const ALL_EXTS = []
 
@@ -2658,7 +2658,7 @@ window.__ModuleLoader__.load({
 .dsss-list{min-height:0;overflow:auto;padding:0 0 18px;scroll-padding-top:46px;scrollbar-width:thin}
 .dsss-list::-webkit-scrollbar{width:8px}
 .dsss-list::-webkit-scrollbar-thumb{background:var(--dsw-alias-border-l3);border-radius:4px}
-.dsss-group{display:flex;flex-direction:column;padding-top:0;isolation:isolate}
+.dsss-group{display:flex;flex-direction:column;padding-top:0;isolation:isolate;content-visibility:auto;contain-intrinsic-size:auto 260px}
 .dsss-group-head{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:9px;border:0;border-bottom:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-1);box-shadow:0 1px 0 var(--dsw-alias-border-l1),0 10px 18px -20px #000;padding:9px 14px 8px;text-align:left;cursor:default}
 
 .dsss-group-mark{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-secondary);flex:none}

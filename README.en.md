@@ -34,7 +34,7 @@ DSH session history grows continuously, while native search is centered on title
 | Location labels | Each hit is labeled `Ask` / `Answer` / `Execute` / `Reasoning` / `Title`, with content type, turn, time, and path. |
 | File-first search | Attachments, tool-call paths, and prose paths become first-class file documents; file-type filters also match files referenced inside body text or tool calls. |
 | Newest first | Scans sessions by update time by default and orders hits within a group newest first; `Relevance` scores the full set before streaming. |
-| Streaming | `/deep-search/api` streams `meta → groups → done` as NDJSON, so the first results render before the full search completes. |
+| Streaming | `/deep-search/api` streams `meta → groups → done` as NDJSON, so the first results render before the full search completes; identical queries reuse a 15s result cache. |
 | Exact jump | Prefers the host turn rail (loading unseen turns through `loadThrough`), then resolves by call ID or turn; collapsed execution steps expand automatically. |
 | Position memory | Selected hit, scroll position, query, and filters persist across session switches. |
 | Retry | Transient `Failed to fetch` errors from Host reloads or connection churn retry three times with backoff. |
