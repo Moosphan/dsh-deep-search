@@ -227,16 +227,16 @@ function warn(message, error) {
 const HAS_ZSTD = typeof zlib.zstdDecompressSync === 'function'
 const gzipAsync = promisify(zlib.gzip)
 
-async function packCache(buffer) {
-  return gzipAsync(buffer)
+async function packCache(text) {
+  return gzipAsync(Buffer.from(text, 'utf8'))
 }
 
 function decodeCache(buffer) {
   try {
-    return v8.deserialize(buffer)
-  } catch {
-    /* Cache written before the v8 format. */
     return JSON.parse(buffer.toString('utf8'))
+  } catch {
+    /* A cache written by the short-lived v8 experiment. */
+    return v8.deserialize(buffer)
   }
 }
 
@@ -272,7 +272,6 @@ function createIndex(ctx) {
   let refreshPromise = null
   let manifestWrite = Promise.resolve()
   let cachePromise = null
-  let migrating = false
 
   const dataDir = resolveDataDir()
   const cacheDir = path.join(dataDir, 'index')
@@ -308,7 +307,6 @@ function createIndex(ctx) {
     }
     await Promise.all(Array.from({ length: 6 }, worker))
     if (entries.size > 0) {
-      if (manifest.cacheFormat !== 'v8') void migrateCache()
       state.builtAt = Number(manifest.savedAt) || Date.now()
       state.buildMs = Number(manifest.buildMs) || 0
       /* A missing cache file means the reuse guarantee is incomplete: let the
@@ -359,9 +357,11 @@ function createIndex(ctx) {
       return Number(sb?.sizeBytes ?? 0) - Number(sa?.sizeBytes ?? 0)
     })
 
-    const alive = new Set(records.map((record) => record.header.id))
-    for (const id of [...entries.keys()]) {
-      if (!alive.has(id)) entries.delete(id)
+    if (records.length > 0) {
+      const alive = new Set(records.map((record) => record.header.id))
+      for (const id of [...entries.keys()]) {
+        if (!alive.has(id)) entries.delete(id)
+      }
     }
 
     state.building = true
@@ -461,7 +461,7 @@ function createIndex(ctx) {
   async function writeSession(entry) {
     try {
       await fs.mkdir(cacheDir, { recursive: true, mode: 0o700 })
-      const packed = await packCache(v8.serialize(entry))
+      const packed = await packCache(JSON.stringify(entry))
       const target = path.join(cacheDir, cacheName(entry.id))
       const temporary = `${target}.${process.pid}.tmp`
       await fs.writeFile(temporary, packed, { mode: 0o600 })
@@ -472,22 +472,11 @@ function createIndex(ctx) {
     }
   }
 
-  async function migrateCache() {
-    if (migrating || entries.size === 0) return
-    migrating = true
-    try {
-      for (const entry of entries.values()) await writeSession(entry)
-      await writeManifest()
-    } finally {
-      migrating = false
-    }
-  }
-
   function writeManifest() {
+    if (entries.size === 0 && state.cacheBytes > 0) return Promise.resolve()
     const snapshot = {
       version: INDEX_VERSION,
       cacheVersion: CACHE_VERSION,
-      cacheFormat: 'v8',
       savedAt: state.builtAt || Date.now(),
       buildMs: state.buildMs,
       bytes: state.cacheBytes,
