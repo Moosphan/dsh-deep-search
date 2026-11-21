@@ -24,6 +24,9 @@ const MAX_BODY_BYTES = 96 * 1024
 const REFRESH_TTL_MS = Number(process.env.DSH_SEARCH_TTL_MS ?? 60_000)
 /** Hard caps that keep one pathological log or one broad query finite. */
 const MAX_DOC_CHARS = 8_000
+/** Extreme-log guard: one Session must not grow without bound. */
+const MAX_SESSION_CHARS = 30_000_000
+const MAX_DOCS_PER_SESSION = 100_000
 const MAX_TOOL_CHARS = 5_000
 const MAX_FILES_PER_DOC = 8
 const MAX_PATH_CHARS = 260
@@ -89,11 +92,14 @@ export function apply(ctx) {
       }),
     'deep-search: api route',
   )
-  /* Warm in the background so the first open of the panel is not a cold start. */
-  const timer = setTimeout(() => {
-    index.ensure(false).catch((error) => warn('warm failed', error))
-  }, 1_200)
-  ctx.effect(() => () => clearTimeout(timer), 'deep-search: warm timer')
+  /* Do not index on plugin load. A background build must be explicit: opening
+     the panel or DSH_SEARCH_WARM=1. This keeps DSH's GUI responsive on install. */
+  if (process.env.DSH_SEARCH_WARM === '1') {
+    const timer = setTimeout(() => {
+      index.ensure(false).catch((error) => warn('warm failed', error))
+    }, 1_200)
+    ctx.effect(() => () => clearTimeout(timer), 'deep-search: warm timer')
+  }
 }
 
 // #region HTTP -----------------------------------------------------------------
@@ -788,6 +794,7 @@ function createIndex(ctx) {
 
   return {
     ensure,
+    warm: () => loadCache(),
     status,
     search,
     stream,
@@ -868,6 +875,7 @@ async function parseSession(id, header, events, rev, live, previous = null) {
   let lastSeq = base === null ? -1 : base.lastSeq
 
   const add = (doc) => {
+    if (docs.length >= MAX_DOCS_PER_SESSION || chars >= MAX_SESSION_CHARS) return
     if (typeof doc.text !== 'string') doc.text = ''
     if ((doc.k === KIND.tool || doc.k === KIND.output) && doc.text.length > MAX_TOOL_CHARS) doc.text = doc.text.slice(0, MAX_TOOL_CHARS)
     if (doc.text.length > MAX_DOC_CHARS) doc.text = doc.text.slice(0, MAX_DOC_CHARS)
@@ -897,9 +905,14 @@ async function parseSession(id, header, events, rev, live, previous = null) {
     }
   }
 
+  let sliceStarted = Date.now()
   for (let eventIndex = start; eventIndex < events.length; eventIndex += 1) {
-    /* Keep the Host's HTTP loop responsive while one large log is folded. */
-    if (eventIndex > 0 && eventIndex % 2000 === 0) await new Promise((resolve) => setImmediate(resolve))
+    /* Time-slice rather than event-count slice: one giant event can still be
+       expensive, but the host regains control at least every ~8 ms. */
+    if ((eventIndex & 255) === 0 && Date.now() - sliceStarted >= 8) {
+      await new Promise((resolve) => setImmediate(resolve))
+      sliceStarted = Date.now()
+    }
     const event = events[eventIndex]
     if (event === null || typeof event !== 'object') continue
     const time = typeof event.time === 'number' ? event.time : 0
